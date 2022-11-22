@@ -1,2 +1,131 @@
 # MT32-DIT
-Digital output for Roland MT-32, D10/20/50/etc
+<h3>Adding digital output to legendary Roland MT-32</h3>
+<p>
+This project can be considered part #2 of the digitalization of old synthesizers. In the first part I described how you can add a 
+digital output to almost any synthesizer (where the DAC circuit uses single I2S line) by using the AK4103AVF</p>
+
+<p>
+Roland MT-32, familiar to old gamers in the 90s and very rare now, is an even older device that uses a parallel DAC scheme that was 
+quite common in Roland's D-series, which does not just convert the final stereo stream in-line, but also simultaneously performs 
+the services of a DAC for the reverb chip.</p>
+
+<p><img src="images/pcm54str.png"></p>
+
+<h3>Digging demuxer logic</h4>
+
+<p>
+It turns out that we do not have direct access to the digital stream containing the final audio data. The PCM54HP receives a stream 
+that sequentially contains not only clean left and right channels, but also separately reverb data for the left and right channels. 
+It looks something like this (all frames are 16bit, order is assumed): [RSYN1][LSYN1][REV R][REV L][RSYN2][LSYN2][RSYN1][LSYN1][REV R][REV L][RSYN2] [LSYN2] etc. 
+The advantage of a parallel DAC is that it works instantly, i.e. there is no delay at all in taking the current values ​​
+from the (essentially) resistor assembly and the next moment doing the task of transforming a completely different picture. 
+The widely known CD4051 is engaged in demultiplexing all this porridge of audio data. Channel switching in the CD4051 is carried out 
+through the control lines mixed from LA and Reverb chips SH1 SH2 SH2 (SH - Sample / Hold), as well as the INH line, which turns on and off 
+all channels. At the output of the demuxer, three pairs of analog channels are formed, which are then mixed and undergo final 
+processing in a low-pass filter. The LP filter should have a flat amplitude response in the 0-20kHz range and a high attenuation above 20kHz.
+</p>
+
+<p><img src="images/schematic.png"></p>
+
+<p>
+Bit depth and sampling frequency of MT-32 according to the declared characteristics - 15bit 32kHz. In the first version of MT-32 
+(the so-called "old"), the last 16th bit at the PCM54HP input is even shorted to ground, and for some reason the 14th bit fell out 
+in the data bus itself (counting from zero). However, for us, the frame width will always be 16 bits. Theoretically, the channel 
+switching frequency 0-1-2-3-4-5-6-7 each time triggers a 0/1 state change in control signal A, so you can expect 128kHz on this line, 
+and 64 on lines B and C, and 32kHz respectively. But we don't know the order of the frames. Even if we sequentially record all the 
+states of the parallel bus, it will be useless if we do not know the order of switching ABC. In practice, without a three-channel 
+oscilloscope, you can try to catch the states of at least two of the three lines (A and C), and then record the AB and BC, A and 
+INH sequences in order to further bring the picture into one.
+</p>
+<p><img src="images/INH-A-B-C.png"></p>
+<p>
+
+So now we know the frame order: [L REV][RSYN2][LSYN2][R REV][RSYN1][LSYN1] [L REV][RSYN2][LSYN2][R REV][RSYN1][LSYN1] .. etc. 
+If you listen to these pins in analog, it becomes clear that SYN1 is a clean signal, REV is a reverb return. SYN2 appears to be 
+analog as well, but too quiet to be recorded legibly; but since SYN2 is also mixed into the final mix, we'll do that too. 
+By the way, if you look at the unused outputs of the CD4051 CH4 and CH5, there will be [almost] crisp 32kHz:
+
+<p><img src="images/CH4.png"><img src="images/CH5.png"></p>
+
+The INH control signal operates at a frequency of 256kHz, which means we will need to read all ports at this frequency. 
+Disabling all channels is necessary so that there is no false triggering on rising edge ABC states, when INH=1 tells us that 
+we don’t need to send anything to serial, but just in case, we will still read the state parallel bus. With INH=0, we must 
+also read the bus, and depending on the states of ABC, scatter it to the appropriate output. Ideally, we need to define the 
+beginning frame (we take the highest INH peak for the reference frame), and mix all L / R frames into two final ones. But for 
+the test, you can start by sending two frames with a clean non-reverberated information (RSYN1, LSYN1). At first I thought to 
+bother with the iron definition of the beginning of the frame 1sequence, but then I omitted this part, because. even if the logic 
+at the start starts working with the thread in the middle of the sequence, defining LSYN1 as the end of the sequence, we will 
+reset the counters and start working in the correct order. The logic in this case will look something like this (I will use a 
+pseudo-language here with a syntax that is clear to everyone):
+<pre>
+(R,L)=(0,0);
+(FLAG_RSYN1,FLAG_LSYN1,FLAG_RSYN2,FLAG_LSYN2,FLAG_RREV,FLAG_LREV)=(0,0,0,0,0,0);
+(RSYN1,LSYN1,RSYN2,LSYN2,RREV,LREV)=(0,0,0,0,0,0);
+while (256kHz_cycle) {
+	input=read(PCM54_parallel);
+	A=read(CD4051_A); B=read(CD4051_B); C=read(CD4051_C); INH=read(CD4051_INH);
+
+	#INH==0 enables output
+	if (INH==0) {
+		if (A==1 && B==1 && C==0) {
+			RSYN2=input; FLAG_RSYN2=1; #RSYN2
+		}
+		elsif (A==0 && B==1 && C==0) {
+			LSYN2=input; FLAG_LSYN2=1; #LSYN2
+		}
+		elsif (A==0 && B==0 && C==1) {
+			RREV=input; FLAG_RREV=1;   #RREV
+		}
+		elsif (A==0 && B==0 && C==0) {
+			LREV=input; FLAG_LREV=1;   #LREV
+		}
+		elsif (A==1 && B==1 && C==1) {
+			RSYN1=input; FLAG_RSYN1=1; #RSYN1
+		}
+		elsif (A==0 && B==1 && C==1) {
+			LSYN1=input; 		   #LSYN1 this is the last channel in frame
+			(FLAG_RSYN1,FLAG_LSYN1,FLAG_RSYN2,FLAG_LSYN2,FLAG_RREV,FLAG_LREV)=(1,1,1,1,1,1);
+		}
+
+		if (FLAG_RSYN1==1 && FLAG_LSYN1==1 && FLAG_RSYN2==1 && FLAG_LSYN2==1 && FLAG_RREV==1 && FLAG_LREV==1) {
+
+			#in merge there will be magic
+			L=merge(LSYN1,LSYN2,LREV);
+			R=merge(RSYN1,RSYN2,RREV);
+			write_serial(R,L); 
+
+			#reset channel flags
+			(FLAG_RSYN1,FLAG_LSYN1,FLAG_RSYN2,FLAG_LSYN2,FLAG_RREV,FLAG_LREV)=(0,0,0,0,0,0);
+		}
+	}
+}
+</pre>
+
+<h3>Hardware part</h3>
+
+<p>Schematically, the plan of the entire project was drawn like this:</p>
+<p><img src="images/profit.png"></p>
+<p>
+There is only one magic figure involved in this plan, and here, I will honestly say, giant constructions from a heap of logic come to mind, which must be performed
+task of mixing digital streams. I was told that I should stop doing garbage and learn a programmable FPGA.
+</p>
+<h4>DIT</h4>
+<p>
+Since we are dealing with 16 bits, a large number of DITs can be used, as they all work at least with 16-bit RJ. For these purposes, I chose DIT4192, because. I have
+it was already available after experimenting with the 18-bit DIT. Here all the binding is standard, the configuration:
+<table border="1">
+<tr><th colspan="2">DIT4192 Hardware mode</th></tr>
+<tr><td>Mode operation</td><td>Slave (SYNC and SCLK are inputs)</td></tr>
+<tr><td>Format</td><td>16-Bit Right-Justified</td></tr>
+<tr><td>Sampling frequency</td><td>32kHz</td></tr>
+<tr><td>Master clock</td><td>16.384MHz (512*fs)</td></tr>
+<tr><td>System clock</td><td>1.024MHz (64*fs)</td></tr>
+</table>
+</p>
+<p><img src="images/dit.png"></p>
+
+<h3>Magic part</h3>
+<p>
+The FPGA Tang Nano 9K was chosen for the magic part.
+
+</p>
