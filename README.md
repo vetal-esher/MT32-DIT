@@ -128,4 +128,6 @@ Since we are dealing with 16 bits, a large number of DITs can be used, as they a
 <h3>Magic part</h3>
 <p>The FPGA Tang Nano 9K was chosen for the magic part, so the "profit" plan was drawn:</p>
 <p><img src="images/profit2.png"></p>
+<p>And then the complete schematic of the "magic" part was done:
+<p><img src="images/9k-schematic.jpg"></p>
 <p><strong>To be continued</strong></p>
