@@ -124,5 +124,6 @@ it was already available after experimenting with the 18-bit DIT. Settings are t
 </p>
 
 <h3>Magic part</h3>
-<p>The FPGA Tang Nano 9K was chosen for the magic part.</p>
+<p>The FPGA Tang Nano 9K was chosen for the magic part, so the "profit" plan was drawn:</p>
+<p><img src="images/profit.png"></p>
 <p><strong>To be continued</strong></p>
