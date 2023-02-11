@@ -107,25 +107,24 @@ while (256kHz_cycle) {
 <p><img src="images/profit.png"></p>
 <p>
 There is only one magic figure involved in this plan, and here, I will honestly say, giant constructions from a heap of logic come to mind, which must be performed
-task of mixing digital streams. I was told that I should stop doing garbage and learn a programmable FPGA.
+task of mixing digital streams. I was told that I should stop doing garbage and learn a programmable FPGA. All of the PCM and INH/A/B/C signals are CMOS-level, so
+we need to convert them to TTL by CD4050B. By the way, we will get fixed levels of INH after CD4050:
 </p>
+<p><img src="images/after4050.png"></p>
 <h4>DIT</h4>
 <p>
-Since we are dealing with 16 bits, a large number of DITs can be used, as they all work at least with 16-bit RJ. For these purposes, I chose DIT4192, because. I have
-it was already available after experimenting with the 18-bit DIT. Here all the binding is standard, the configuration:
+Since we are dealing with 16 bits, a large number of DITs can be used, as they all work at least with 16-bit RJ. For these purposes, I chose DIT4192, because I have
+it was already available after experimenting with the 18-bit DIT. Settings are typical:
 <table border="1">
 <tr><th colspan="2">DIT4192 Hardware mode</th></tr>
 <tr><td>Mode operation</td><td>Slave (SYNC and SCLK are inputs)</td></tr>
 <tr><td>Format</td><td>16-Bit Right-Justified</td></tr>
 <tr><td>Sampling frequency</td><td>32kHz</td></tr>
 <tr><td>Master clock</td><td>16.384MHz (512*fs)</td></tr>
-<tr><td>System clock</td><td>1.024MHz (64*fs)</td></tr>
+<tr><td>System clock</td><td>1.024MHz (16*2*32KHz)</td></tr>
 </table>
 </p>
-<p><img src="images/dit.png"></p>
 
 <h3>Magic part</h3>
-<p>
-The FPGA Tang Nano 9K was chosen for the magic part.
-
-</p>
+<p>The FPGA Tang Nano 9K was chosen for the magic part.</p>
+<p><strong>To be continued</strong></p>
