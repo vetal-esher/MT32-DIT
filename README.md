@@ -112,8 +112,7 @@ we need to convert them to TTL by CD4050B. By the way, we will get fixed levels 
 <p><img src="images/after4050.png"></p>
 <h4>DIT</h4>
 <p>
-Since we are dealing with 16 bits, a large number of DITs can be used, as they all work at least with 16-bit RJ. For these purposes, I chose DIT4192, because I have
-it was already available after experimenting with the 18-bit DIT. Settings are typical:
+Since we are dealing with 16 bits, a large number of DITs can be used, as they all work at least with 16-bit RJ. For these purposes, I chose DIT4192, because I have it was already available after experimenting with the 18-bit DIT. Settings are typical:
 <table border="1">
 <tr><th colspan="2">DIT4192 Hardware mode</th></tr>
 <tr><td>Mode operation</td><td>Slave (SYNC and SCLK are inputs)</td></tr>
@@ -123,6 +122,8 @@ it was already available after experimenting with the 18-bit DIT. Settings are t
 <tr><td>System clock</td><td>1.024MHz (16*2*32KHz)</td></tr>
 </table>
 </p>
+
+<p><img src="images/dit-schematic.jpg"></p>
 
 <h3>Magic part</h3>
 <p>The FPGA Tang Nano 9K was chosen for the magic part, so the "profit" plan was drawn:</p>
