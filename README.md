@@ -9,8 +9,6 @@ Roland MT-32, familiar to old gamers in the 90s and very rare now, is an even ol
 quite common in Roland's D-series, which does not just convert the final stereo stream in-line, but also simultaneously performs 
 the services of a DAC for the reverb chip.</p>
 
-<p><img src="images/pcm54str.png"></p>
-
 <h3>Digging demuxer logic</h4>
 
 <p>
