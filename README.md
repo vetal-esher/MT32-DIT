@@ -119,7 +119,7 @@ Since we are dealing with 16 bits, a large number of DITs can be used, as they a
 <tr><td>Format</td><td>16-Bit Right-Justified</td></tr>
 <tr><td>Sampling frequency</td><td>32kHz</td></tr>
 <tr><td>Master clock</td><td>16.384MHz (512*fs)</td></tr>
-<tr><td>System clock</td><td>1.024MHz (16*2*32KHz)</td></tr>
+<tr><td>Bit clock</td><td>1.024MHz (16*2*32KHz)</td></tr>
 </table>
 </p>
 
