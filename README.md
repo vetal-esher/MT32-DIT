@@ -1,8 +1,7 @@
 # MT32-DIT
 <h3>Adding digital output to legendary Roland MT-32</h3>
 <p>
-This project can be considered part #2 of the digitalization of old synthesizers. In the first part I described how you can add a 
-digital output to almost any synthesizer (where the DAC circuit uses single I2S line) by using the AK4103AVF</p>
+This project can be considered part #2 of the digitalization of old synthesizers. In the first part I described <a href="https://github.com/vetal-esher/18bit-DIT">how you can add a  digital outpu</a>t to almost any synthesizer (where the DAC circuit uses single I2S line) by using the AK4103AVF</p>
 
 <p>
 Roland MT-32, familiar to old gamers in the 90s and very rare now, is an even older device that uses a parallel DAC scheme that was 
