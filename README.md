@@ -10,6 +10,8 @@ the services of a DAC for the reverb chip.</p>
 
 <h3>Digging demuxer logic</h4>
 
+<p><img src="images/mt32-4051.jpg"></p>
+
 <p>
 It turns out that we do not have direct access to the digital stream containing the final audio data. The PCM54HP receives a stream 
 that sequentially contains not only clean left and right channels, but also separately reverb data for the left and right channels. 
