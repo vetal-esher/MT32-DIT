@@ -284,6 +284,6 @@ The <a href="https://www.youtube.com/watch?v=VIkrG32c1l0">first video</a> of cle
 
 It turned out, that the verilog firmware periodically won't work. Let me explain: the same perfect code, the same .fs can be flashed into TangNano9K many times, and in 99% cases the sound wont be clean. Even worse: DIT pcb with working "clean sound" firmware turned off, then after hours, when you turn it on - it have already broken sound. Also, i found that the frequency of DTR (the flag that signals about full frame cycle pass) is slightly faster than WCLK (smth about 32.00010kHz@DTR vs exact 32.00000kHz@WCLK). I tried to use a couple of async FIFO versions between dac_decoder and i2s_serializer modules, but with no luck.
 
-As a fpga synthesizer, i used opensource Yosys/Apicula/NextPNR, because due to war sanctions, we here in Russia were cut off from many programs, including Gowin IDE free license program.
+As a firmware synthesizer, i used opensource Yosys/Apicula/NextPNR, because due to war sanctions, we here in Russia were cut off from many programs, including Gowin IDE free license program.
 
 <p><strong>To be continued</strong></p>
