@@ -126,7 +126,7 @@ Since we are dealing with 16 bits, a large number of DITs can be used, as they a
 <p><img src="images/dit-schematic.jpg"></p>
 
 <h3>Magic part</h3>
-<p>The FPGA Tang Nano 9K was chosen for the magic part, so the "profit" plan was drawn:</p>
+<p>The FPGA <a href="https://wiki.sipeed.com/hardware/en/tang/Tang-Nano-9K/Nano-9K.html">Tang Nano 9K</a> was chosen for the magic part, so the "profit" plan was drawn:</p>
 <p><img src="images/profit2.png"></p>
 <p>And then the complete schematic of the "magic" part was done (note that PCM54HP symbols are used here only for forming the footprint and placing MT32-DIT pcb over the PCM54 ic "in 2nd row"): </p>
 <p><img src="images/9k-schematic.jpg"></p>
