@@ -175,7 +175,8 @@ module i2s_serializer (
 	input [31:0] data,		//input channels register 
 	input wire rst_n,		//reset button	
         output reg wclk,        	//i2s word select lrck output mclk/512 = 32kHz
-        output wire bck         	//[3] bit'mclk. i2s bit clock output //16bit * 2 * 32000 = 1.024 MHz (16.384/16)
+        output wire bck         	//[3] bit'mclk. i2s bit clock output 
+					//16bit * 2 * 32000 = 1.024 MHz (16.384/16)
 );
 reg [31:0] mclk_counter;       		//32bit counter
 assign bck=mclk_counter[3];     	//1.024MHz divide
@@ -192,12 +193,14 @@ always  @(posedge mclk,negedge rst_n) begin
 end
 
 //i2s WCLK=0 left, =1 right
-always  @(negedge bck) begin			//send sdata from buffer
-	if (wclk==0) begin sdata<=data_buf[31-cbit]; end 				//LSYN send
-	else if (wclk==1) begin sdata<=data_buf[15-cbit]; end				//RSYN send
+always  @(negedge bck) begin					//send sdata from buffer
+	if (wclk==0) begin sdata<=data_buf[31-cbit]; end 	//LSYN send
+	else if (wclk==1) begin sdata<=data_buf[15-cbit]; end	//RSYN send
 	cbit<=cbit+1;
-	if (cbit==15 && wclk==0) begin cbit<=0; wclk<=1; end				//LSYN1 end
-	else if (cbit==15 && wclk==1) begin cbit<=0; wclk<=0; data_buf<=data; end 	//RSYN1 end, new buffer read
+	if (cbit==15 && wclk==0) 
+		begin cbit<=0; wclk<=1; end			//LSYN1 end
+	else if (cbit==15 && wclk==1) 
+		begin cbit<=0; wclk<=0; data_buf<=data; end 	//RSYN1 end, new buffer read
 end
 endmodule
 
