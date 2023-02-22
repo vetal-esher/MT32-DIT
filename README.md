@@ -152,9 +152,9 @@ Since we are dealing with 16 bits, a large number of DITs can be used, as they a
 	<tr><td>U7</td><td>1</td><td>AP1117-33</td><td>SOT223-3_TABPIN2</td></tr>
 	<tr><td>U9</td><td>1</td><td>ADM6711***</td><td>SOT-343 (SC-70-4)</td></tr>
 	<tr><td>U10</td><td>2</td><td>PinHeader 1x28</td><td>P2.54mm</td></tr>
-	<tr><td>T1</td><td>1</td><td>PE-65612NL***</td><td></td></tr>
-	<tr><td>SW1</td><td>1</td><td>PWR SW</td><td>SW_DIP_SPSTx01_Slide_6.7x4.1mm_W7.62mm_P2.54mm</td></tr>
-	<tr><td>SW2</td><td>1</td><td>CFG SW***</td><td>SW_DIP_SPSTx05_Piano_10.8x14.26mm_W7.62mm_P2.54mm</td></tr>
+	<tr><td>T1</td><td>1</td><td>PE-65612NL***</td><td>PE-65612NL</td></tr>
+	<tr><td>SW1</td><td>1</td><td>PWR SW</td><td>SW_DIP_SPSTx01_P2.54mm</td></tr>
+	<tr><td>SW2</td><td>1</td><td>CFG SW***</td><td>SW_DIP_SPSTx05_P2.54mm</td></tr>
 	<tr><td>R1, R2, R4, R5, R6, R7, R8</td><td>7</td><td>10K ***</td><td>0402</td></tr>
 	<tr><td>R3</td><td>1</td><td>300R ***</td><td>0402</td></tr>
 	<tr><td>J1</td><td>1</td><td>PinHeader 1x04</td><td>P2.54mm</td></tr>
