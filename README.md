@@ -161,7 +161,7 @@ Since we are dealing with 16 bits, a large number of DITs can be used, as they a
 	<tr><td>T1</td><td>1</td><td>PE-65612NL***</td><td></td></tr>
 	<tr><td>C1, C2, C3, C4, C5, C6, C7, C8, C10, C11, C12***, C13***, C14, C15***</td><td>14</td><td>0.1uF</td><td>0402</td></tr>
 	<tr><td>C9</td><td>1</td><td>10-22uF</td><td>CP_EIA-7343-43</td></tr>
-	<tr><td>D1</td><td></td><td>DNP*, short</td><td>/td></tr>
+	<tr><td>D1</td><td></td><td>DNP*, short</td><td></td></tr>
 	<tr><td>R1, R2, R4, R5, R6, R7, R8</td><td>7</td><td>10K ***</td><td>0402</td></tr>
 	<tr><td>R3</td><td>1</td><td>300R ***</td><td>0402</td></tr>
 	
