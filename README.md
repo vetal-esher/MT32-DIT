@@ -245,9 +245,10 @@ end
 endmodule
 </pre>
 
-The first video of clean capture (sorry for low volume, it was at night) (clean stereo, no reverb):
+The <a href="https://www.youtube.com/watch?v=VIkrG32c1l0">first video</a> of clean capture (sorry for low volume, it was at night) (clean stereo, no reverb).
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/VIkrG32c1l0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
+
 
 <h3>Problems and pitfalls</h3>
 
