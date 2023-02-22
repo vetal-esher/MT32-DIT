@@ -217,7 +217,6 @@ reg [15:0] ch2;				//LSYN2
 reg [15:0] ch1;				//RREV
 reg [15:0] ch7;				//RSYN1
 reg [15:0] ch3;				//LSYN1
-reg [15:0] sine;			//generated ch
 initial begin
 	ch0<=0; ch1<=0; ch2<=0; ch3<=0; ch6<=0; ch7<=0; dtr<=0; data<=0;
 end
@@ -228,14 +227,14 @@ always  @(negedge clk_inh,negedge rst_n) begin
 	end 
 	else begin
 	case (ch_id)
-		4 : begin dtr<=0; end // empty
-		0 : begin dtr<=0; ch0<=dac; end // data[0]<=dac; end
-		6 : begin dtr<=0; ch6<=dac; end // data[6]<=dac; end
-		2 : begin dtr<=0; ch2<=dac; end // data[2]<=dac; end
-		5 : begin dtr<=0; end // empty
-		1 : begin dtr<=0; ch1<=dac; end // data[1]<=dac; end
-		7 : begin dtr<=0; ch7<=dac; end // data[7]<=dac; end
-		3 : begin dtr<=1; ch3<=dac; data = {dac,ch7}; end
+		4 : begin dtr<=0; end 			// empty
+		0 : begin dtr<=0; ch0<=dac; end 	// LREV
+		6 : begin dtr<=0; ch6<=dac; end 	// RSYN2 
+		2 : begin dtr<=0; ch2<=dac; end 	// LSYN2
+		5 : begin dtr<=0; end 			// empty
+		1 : begin dtr<=0; ch1<=dac; end 	// RREV
+		7 : begin dtr<=0; ch7<=dac; end 	// RSYN
+		3 : begin dtr<=1; ch3<=dac; data = {dac,ch7}; end // LSYN
 	endcase
 	end
 end
