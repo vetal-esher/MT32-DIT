@@ -252,6 +252,8 @@ The <a href="https://www.youtube.com/watch?v=VIkrG32c1l0">first video</a> of cle
 
 <h3>Problems and pitfalls</h3>
 
-It turned out, that the verilog firmware periodically won't work. Let me explain: the same perfect code, the same .fs can be flashed into TangNano9K many times, and in 99% cases the sound wont be clean. As a fpga synthesizer, i used opensource Yosys/Apicula/NextPNR, because due to war sanctions, we here in Russia were cut off from many programs, including Gowin IDE free license program.
+It turned out, that the verilog firmware periodically won't work. Let me explain: the same perfect code, the same .fs can be flashed into TangNano9K many times, and in 99% cases the sound wont be clean. Even worse: working firmware with DIT pcb turned off, then after hours when you turn it on - it is already have broken sound.
+
+As a fpga synthesizer, i used opensource Yosys/Apicula/NextPNR, because due to war sanctions, we here in Russia were cut off from many programs, including Gowin IDE free license program.
 
 <p><strong>To be continued</strong></p>
