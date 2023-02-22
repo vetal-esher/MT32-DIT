@@ -33,7 +33,7 @@ processing in a low-pass filter. The LP filter should have a flat amplitude resp
 Bit depth and sampling frequency of MT-32 according to the declared characteristics - 15bit 32kHz. In the first version of MT-32 
 (the so-called "old"), the last 16th bit at the PCM54HP input is shorted to ground, and for that (15bit) reason the 14th bit fell out 
 in the data bus itself (counting from zero). However, for us, the frame width will always be 16 bits (the 2nd MT-32 version has full 16bit bus). Theoretically, the channel  switching frequency 0-1-2-3-4-5-6-7 each time triggers a 0/1 state change in control signal A, so you can 
-expect 128kHz on this line,  and 64 on lines B and C, and 32kHz respectively. But we don't know the order of the frames. Even if we 
+expect 128kHz on this line,  64kHz on line B, and C with 32kHz respectively. But we don't know the order of the frames. Even if we 
 sequentially record all the states of the parallel bus, it will be useless if we do not know the order of switching ABC. In practice, 
 without a three-channel oscilloscope, you can try to catch the states of at least two of the three lines (A and C), and then record 
 the AB and BC, A and INH sequences in order to further bring the picture into one.
@@ -112,7 +112,7 @@ There is only one magic figure involved in this plan, and here, I will honestly 
 <p><img src="images/after4050.png"></p>
 <h4>DIT</h4>
 <p>
-Since we are dealing with 16 bits, a large number of DITs can be used, as they all work at least with 16-bit RJ. For these purposes, I chose DIT4192, because I have it was already available after experimenting with the 18-bit DIT, but you can skip 4192 if you have not it (details below). Settings are typical:
+Since we are dealing with 16 bits, a large number of DITs can be used, as they all work at least with 16-bit RJ. For these purposes, I chose DIT4192, because I have it  already available after experimenting with the 18-bit DIT, but you can skip mounting 4192 if you don't have it (details below). Settings are typical:
 <table border="1">
 <tr><th colspan="2">DIT4192 Hardware mode</th></tr>
 <tr><td>Mode operation</td><td>Slave (SYNC and SCLK are inputs)</td></tr>
@@ -166,8 +166,8 @@ Since we are dealing with 16 bits, a large number of DITs can be used, as they a
 	<tr><td>C9</td><td>1</td><td>10-22uF</td><td>CP_EIA-7343-43</td></tr>
 </table>
 
-<p><strong>*</strong> - Do Not Place.</p>
-<p><strong>**</strong> - optional, no need if DIT pcb soldered on top of original DAC</p>
+<p><strong>*</strong> - Do Not Place</p>
+<p><strong>**</strong> - optional, no need if DIT pcb soldered on top of the original DAC</p>
 <p><strong>***</strong> - optional, no need if DIT4192 is not available and you use external DIT</p>
 
 
