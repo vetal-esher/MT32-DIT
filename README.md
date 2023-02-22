@@ -1,12 +1,12 @@
 # MT32-DIT
 <h3>Adding digital output to legendary Roland MT-32</h3>
 <p>
-This project can be considered part #2 of the digitalization of old synthesizers. In the first part I described <a href="https://github.com/vetal-esher/18bit-DIT">how you can add a  digital outpu</a>t to almost any synthesizer (where the DAC circuit uses single I2S line) by using the AK4103AVF</p>
+This project can be considered part #2 of the digitalization of old synthesizers. In the first part I described <a href="https://github.com/vetal-esher/18bit-DIT">how you can add a  digital outpu</a>t to almost any synthesizer (where the DAC circuit uses standard L/R combined I2S) by using the AK4103AVF</p>
 
 <p>
 Roland MT-32, familiar to old gamers in the 90s and very rare now, is an even older device that uses a parallel DAC scheme that was 
 quite common in Roland's D-series, which does not just convert the final stereo stream in-line, but also simultaneously performs 
-the services of a DAC for the reverb chip.</p>
+the services of a DAC for the reverb IC.</p>
 
 <h3>Digging demuxer logic</h4>
 
@@ -14,9 +14,10 @@ the services of a DAC for the reverb chip.</p>
 
 <p>
 It turns out that we do not have direct access to the digital stream containing the final audio data. The PCM54HP receives a stream 
-that sequentially contains not only clean left and right channels, but also separately reverb data for the left and right channels. 
-It looks something like this (all frames are 16bit, order is assumed): [RSYN1][LSYN1][REV R][REV L][RSYN2][LSYN2][RSYN1][LSYN1][REV R][REV L][RSYN2] [LSYN2] etc. 
-The advantage of a parallel DAC is that it works instantly, i.e. there is no delay at all in taking the current values ​​
+that sequentially contains not only clean left and right channels, but also separate reverb data for the left and right channels. 
+It looks something like this (all frames are 16bit, order is assumed): [RSYN1][LSYN1][REV R][REV L][RSYN2][LSYN2][RSYN1][LSYN1][REV R][REV L][RSYN2] [LSYN2] etc.</p>
+<p>
+The advantage of a parallel DAC is that it works instantly, i.e. there is no delay at all in taking the current values 
 from the (essentially) resistor assembly and the next moment doing the task of transforming a completely different picture. 
 The widely known CD4051 is engaged in demultiplexing all this porridge of audio data. Channel switching in the CD4051 is carried out 
 through the control lines mixed from LA and Reverb chips SH1 SH2 SH2 (SH - Sample / Hold), as well as the INH line, which turns on and off 
@@ -28,34 +29,33 @@ processing in a low-pass filter. The LP filter should have a flat amplitude resp
 
 <p>
 Bit depth and sampling frequency of MT-32 according to the declared characteristics - 15bit 32kHz. In the first version of MT-32 
-(the so-called "old"), the last 16th bit at the PCM54HP input is even shorted to ground, and for some reason the 14th bit fell out 
-in the data bus itself (counting from zero). However, for us, the frame width will always be 16 bits. Theoretically, the channel 
-switching frequency 0-1-2-3-4-5-6-7 each time triggers a 0/1 state change in control signal A, so you can expect 128kHz on this line, 
-and 64 on lines B and C, and 32kHz respectively. But we don't know the order of the frames. Even if we sequentially record all the 
-states of the parallel bus, it will be useless if we do not know the order of switching ABC. In practice, without a three-channel 
-oscilloscope, you can try to catch the states of at least two of the three lines (A and C), and then record the AB and BC, A and 
-INH sequences in order to further bring the picture into one.
+(the so-called "old"), the last 16th bit at the PCM54HP input is shorted to ground, and for that (15bit) reason the 14th bit fell out 
+in the data bus itself (counting from zero). However, for us, the frame width will always be 16 bits (the 2nd MT-32 version has full 16bit bus). Theoretically, the channel  switching frequency 0-1-2-3-4-5-6-7 each time triggers a 0/1 state change in control signal A, so you can 
+expect 128kHz on this line,  and 64 on lines B and C, and 32kHz respectively. But we don't know the order of the frames. Even if we 
+sequentially record all the states of the parallel bus, it will be useless if we do not know the order of switching ABC. In practice, 
+without a three-channel oscilloscope, you can try to catch the states of at least two of the three lines (A and C), and then record 
+the AB and BC, A and INH sequences in order to further bring the picture into one.
 </p>
 <p><img src="images/INH-A-B-C.png"></p>
 <p>
 
-So now we know the frame order: [L REV][RSYN2][LSYN2][R REV][RSYN1][LSYN1] [L REV][RSYN2][LSYN2][R REV][RSYN1][LSYN1] .. etc. 
+So now we know the frame order: [L REV][RSYN2][LSYN2][R REV][RSYN1][LSYN1], [L REV][RSYN2][LSYN2][R REV][RSYN1][LSYN1] .. etc. 
 If you listen to these pins in analog, it becomes clear that SYN1 is a clean signal, REV is a reverb return. SYN2 appears to be 
 analog as well, but too quiet to be recorded legibly; but since SYN2 is also mixed into the final mix, we'll do that too. 
 By the way, if you look at the unused outputs of the CD4051 CH4 and CH5, there will be [almost] crisp 32kHz:
 
 <p float="left"><img src="images/CH4.png" width="50%"><img src="images/CH5.png" width="50%"></p>
 
-The INH control signal operates at a frequency of 256kHz, which means we will need to read all ports at this frequency. 
-Disabling all channels is necessary so that there is no false triggering on rising edge ABC states, when INH=1 tells us that 
-we don’t need to send anything to serial, but just in case, we will still read the state parallel bus. With INH=0, we must 
-also read the bus, and depending on the states of ABC, scatter it to the appropriate output. Ideally, we need to define the 
-beginning frame (we take the highest INH peak for the reference frame), and mix all L / R frames into two final ones. But for 
-the test, you can start by sending two frames with a clean non-reverberated information (RSYN1, LSYN1). At first I thought to 
-bother with the iron definition of the beginning of the frame 1sequence, but then I omitted this part, because. even if the logic 
-at the start starts working with the thread in the middle of the sequence, defining LSYN1 as the end of the sequence, we will 
-reset the counters and start working in the correct order. The logic in this case will look something like this (I will use a 
-pseudo-language here with a syntax that is clear to everyone):
+<p>The INH control signal operates at a frequency of 256kHz, which means we will need to read all ports at this frequency. 
+Disabling all channels is necessary so that there is no false triggering on rising edges @ABC states, when INH=1 tells us that 
+we don’t need to send anything to serial. With INH=0, we must read the bus, and depending on the states of ABC, scatter it to 
+the appropriate output. Ideally, we need to define the beginning of frame (we take the highest INH peak for the reference frame)
+and mix all L / R frames into two final ones. But for the test, you can start by sending two frames with a clean non-reverberated 
+information (RSYN1, LSYN1). At first I thought to bother with the sequence' start detection, but then I omitted this part, because,
+even if the logic begins to run in the middle, defining LSYN1 as the end of the sequence we will reset the counters and then start 
+working in the correct order. The logic in this case will look something like this (I will use a pseudo-language here with a syntax 
+that is clear to everyone):</p>
+
 <pre>
 (R,L)=(0,0);
 (FLAG_RSYN1,FLAG_LSYN1,FLAG_RSYN2,FLAG_LSYN2,FLAG_RREV,FLAG_LREV)=(0,0,0,0,0,0);
@@ -105,9 +105,7 @@ while (256kHz_cycle) {
 <p>Schematically, the plan of the entire project was drawn like this:</p>
 <p><img src="images/profit.png"></p>
 <p>
-There is only one magic figure involved in this plan, and here, I will honestly say, giant constructions from a heap of logic come to mind, which must be performed
-task of mixing digital streams. I was told that I should stop doing garbage and learn a programmable FPGA. All of the PCM and INH/A/B/C signals are CMOS-level, so
-we need to convert them to TTL by CD4050B. By the way, we will get fixed levels of INH after CD4050:
+There is only one magic figure involved in this plan, and here, I will honestly say, giant constructions from a heap of logic come to mind, which must perform the task of mixing digital streams. I was told that I should stop doing garbage and learn a programmable FPGA. All of the PCM and INH/A/B/C signals are CMOS-level, so we need to convert them to TTL by CD4050B. By the way, we will get fixed levels of INH after CD4050:
 </p>
 <p><img src="images/after4050.png"></p>
 <h4>DIT</h4>
@@ -128,7 +126,7 @@ Since we are dealing with 16 bits, a large number of DITs can be used, as they a
 <h3>Magic part</h3>
 <p>The FPGA <a href="https://wiki.sipeed.com/hardware/en/tang/Tang-Nano-9K/Nano-9K.html">Tang Nano 9K</a> was chosen for the magic part, so the "profit" plan was drawn:</p>
 <p><img src="images/profit2.png"></p>
-<p>And then the complete schematic of the "magic" part was done (note that PCM54HP symbols are used here only for forming the footprint and placing MT32-DIT pcb over the PCM54 ic "in 2nd row"): </p>
+<p>And then the complete schematic of the "magic" part was done. Note the I2S connector, you can completely skip DIT4192 in schematic and use your favorite external DIT, or even just transport I2S to I2S receiver.</p>
 <p><img src="images/9k-schematic.jpg"></p>
 
 <h3>Making prototypes</h3>
@@ -139,7 +137,7 @@ Since we are dealing with 16 bits, a large number of DITs can be used, as they a
 
 <p float="left"><img src="images/pcbway1.jpg" width="50%"><img src="images/pcbway2.jpg" width="50%"></p>
 
-<p>Final design assumes, that the original PCM54HP will be desoldered from MT-32 mainboard, and then socketed on second footprint right on DIT pcb. After that, MT32-DIT can be soldered or socketed on MT-32 main board. But for now, we just put on the DIT board right over PCM54HP IC.</p>
+<p>Final design assumes, that the original PCM54HP will be desoldered from MT-32 mainboard, and then socketed on second footprint right on DIT pcb. After that, MT32-DIT can be soldered or socketed on MT-32 mainboard. But for now, we'll just put on the DIT board right over PCM54HP IC.</p>
 
 <h3>Learning VERILOG</h3>
 <p>I did not have any experience in designing FPGA projects, and did not knew about verilog language anything. But it appeared, that my pseudo-language logic described above is almost verilog-like! So, after few weeks, the very first working code was written:
