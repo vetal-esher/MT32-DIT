@@ -170,7 +170,7 @@ Since we are dealing with 16 bits, a large number of DITs can be used, as they a
 
 <p><strong>*</strong> - Do Not Place.</p>
 <p><strong>**</strong> - optional, no need if DIT pcb soldered on top of original DAC</p>
-<p><strong>***</strong> - optional, no need in DIT4192 is not available and you use external DIT</p>
+<p><strong>***</strong> - optional, no need if DIT4192 is not available and you use external DIT</p>
 
 
 <h3>Learning VERILOG</h3>
