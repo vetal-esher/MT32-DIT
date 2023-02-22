@@ -18,8 +18,10 @@ that sequentially contains not only clean left and right channels, but also sepa
 It looks something like this (all frames are 16bit, order is assumed): [RSYN1][LSYN1][REV R][REV L][RSYN2][LSYN2][RSYN1][LSYN1][REV R][REV L][RSYN2] [LSYN2] etc.</p>
 <p>
 The advantage of a parallel DAC is that it works instantly, i.e. there is no delay at all in taking the current values 
-from the (essentially) resistor assembly and the next moment doing the task of transforming a completely different picture. 
-The widely known CD4051 is engaged in demultiplexing all this porridge of audio data. Channel switching in the CD4051 is carried out 
+from the (essentially) resistor assembly and the next moment doing the task of transforming a completely different picture. <strong>Edit: 
+to tell the truth, there IS small delay (2.5ms) required to let the output settled the final value.</strong>
+</p>
+<p>The widely known CD4051 is engaged in demultiplexing all this porridge of audio data. Channel switching in the CD4051 is carried out 
 through the control lines mixed from LA and Reverb chips SH1 SH2 SH2 (SH - Sample / Hold), as well as the INH line, which turns on and off 
 all channels. At the output of the demuxer, three pairs of analog channels are formed, which are then mixed and undergo final 
 processing in a low-pass filter. The LP filter should have a flat amplitude response in the 0-20kHz range and a high attenuation above 20kHz.
@@ -105,7 +107,7 @@ while (256kHz_cycle) {
 <p>Schematically, the plan of the entire project was drawn like this:</p>
 <p><img src="images/profit.png"></p>
 <p>
-There is only one magic figure involved in this plan, and here, I will honestly say, giant constructions from a heap of logic come to mind, which must perform the task of mixing digital streams. I was told that I should stop doing garbage and learn a programmable FPGA. All of the PCM and INH/A/B/C signals are CMOS-level, so we need to convert them to TTL by CD4050B. By the way, we will get fixed levels of INH after CD4050:
+There is only one magic figure involved in this plan, and here, I will honestly say, giant constructions of logic which must perform the task of mixing digital streams comes to mind. I was told that I should stop doing garbage and learn a programmable FPGA. All of the DAC and INH/A/B/C signals are CMOS-level, so we need to convert them to TTL by CD4050B. By the way, we will get fixed levels of INH after CD4050:
 </p>
 <p><img src="images/after4050.png"></p>
 <h4>DIT</h4>
@@ -138,6 +140,10 @@ Since we are dealing with 16 bits, a large number of DITs can be used, as they a
 <p float="left"><img src="images/pcbway1.jpg" width="50%"><img src="images/pcbway2.jpg" width="50%"></p>
 
 <p>Final design assumes, that the original PCM54HP will be desoldered from MT-32 mainboard, and then socketed on second footprint right on DIT pcb. After that, MT32-DIT can be soldered or socketed on MT-32 mainboard. But for now, we'll just put on the DIT board right over PCM54HP IC.</p>
+
+<h3>Partlist</h3>
+
+<strong>to be inserted</strong>
 
 <h3>Learning VERILOG</h3>
 <p>I did not have any experience in designing FPGA projects, and did not knew about verilog language anything. But it appeared, that my pseudo-language logic described above is almost verilog-like! So, after few weeks, the very first working code was written:
