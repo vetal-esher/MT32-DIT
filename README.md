@@ -151,6 +151,7 @@ module top (
         input [2:0] ch_id,      //cd4051 sample/hold controls a/b/c 128/64/32kHz //pin a 77 b 76 c 48
         input [15:0] dac,       //parallel input from dac
 	input sys_rst_n,        //reset input
+	output wire dtr,        //data ready flag //pin54
         output sdata,           //16bit i2s sdata output  //pin 49
         output wire wclk,       //i2s word select lrck output 32kHz //pin 31
         output wire bck         //i2s bit clock output 1024MHz //pin32
@@ -159,7 +160,7 @@ module top (
 wire [31:0] data;
 
 dac_decoder dac1(
-	.clk_inh(clk_inh),.ch_id(ch_id),.dac(dac),.data(data),.rst_n(sys_rst_n)
+	.clk_inh(clk_inh),.ch_id(ch_id),.dac(dac),.data(data),.rst_n(sys_rst_n),.dtr(dtr)
 );
 
 i2s_serializer ser1 (
@@ -207,7 +208,8 @@ module dac_decoder (
         input clk_inh,          	//256kHz INH clk input
         input [2:0] ch_id,    		//cd4051 sample/hold controls a/b/c
         input [15:0] dac,       	//parallel input from dac
-	output reg [31:0] data		//32 bit
+	output reg [31:0] data,		//32 bit
+	output reg dtr			//data ready flag
 );
 reg [15:0] ch0;				//LREV
 reg [15:0] ch6;				//RSYN2
@@ -217,7 +219,7 @@ reg [15:0] ch7;				//RSYN1
 reg [15:0] ch3;				//LSYN1
 reg [15:0] sine;			//generated ch
 initial begin
-	ch0<=0; ch1<=0; ch2<=0; ch3<=0; ch6<=0; ch7<=0;
+	ch0<=0; ch1<=0; ch2<=0; ch3<=0; ch6<=0; ch7<=0; dtr<=0; data<=0;
 end
 
 always  @(negedge clk_inh,negedge rst_n) begin
