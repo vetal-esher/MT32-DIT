@@ -146,30 +146,32 @@ Since we are dealing with 16 bits, a large number of DITs can be used, as they a
 	<tr><th>Reference</th><th>Total</th><th>Value</th><th>Package</th></tr>
 	<tr><td>U1, U2, U3, U5</td><td>4</td><td>CD4050</td><td>SO-16</td></tr>
 	<tr><td>U4</td><td>1</td><td>Gowin 9K</td><td></td></tr>
-	<tr><td>U6</td><td>1</td><td>PCM54HP</td><td>DIP-28</td></tr>
-	<tr><td>U8</td><td>1</td><td>DIT4192IPW</td><td>SSOP-28</td></tr>
+	<tr><td>U6</td><td>1</td><td>PCM54HP**</td><td>DIP-28</td></tr>
+	<tr><td>U8</td><td>1</td><td>DIT4192IPW***</td><td>SSOP-28</td></tr>
 	<tr><td>U7</td><td>1</td><td>AP1117-33</td><td>SOT223-3_TABPIN2</td></tr>
-	<tr><td>U9</td><td>1</td><td>ADM6711</td><td>SOT-343 (SC-70-4)</td></tr>
+	<tr><td>U9</td><td>1</td><td>ADM6711***</td><td>SOT-343 (SC-70-4)</td></tr>
 	<tr><td>U10</td><td>2</td><td>PinHeader 1x28</td><td>P2.54mm</td></tr>
 	<tr><td>X1</td><td>1</td><td>16.384MHz</td><td>Oscillator DIP-8</td></tr>
 	<tr><td>J1</td><td>1</td><td>PinHeader 1x04</td><td>P2.54mm</td></tr>
-	<tr><td>J2, J3</td><td>1</td><td>PinHeader 1x02</td><td>P2.54mm</td></tr>
+	<tr><td>J2, J3***</td><td>2</td><td>PinHeader 1x02</td><td>P2.54mm</td></tr>
 	<tr><td>J4</td><td></td><td>DNP*</td><td></td></tr>
 	<tr><td>J5</td><td>1</td><td>PinHeader 1x05</td><td>P2.54mm</td></tr>
 	<tr><td>SW1</td><td>1</td><td>PWR SW</td><td>SW_DIP_SPSTx01_Slide_6.7x4.1mm_W7.62mm_P2.54mm</td></tr>
-	<tr><td>SW2</td><td>1</td><td>CFG SW</td><td>SW_DIP_SPSTx05_Piano_10.8x14.26mm_W7.62mm_P2.54mm</td></tr>
-	<tr><td>T1</td><td>1</td><td>PE-65612NL, TC-612</td><td></td></tr>
-	<tr><td>C1, C2, C3, C4, C5, C6, C7, C8, C10, C11, C12, C13, C14, C15</td><td>14</td><td>0.1uF</td><td>0402</td></tr>
+	<tr><td>SW2</td><td>1</td><td>CFG SW***</td><td>SW_DIP_SPSTx05_Piano_10.8x14.26mm_W7.62mm_P2.54mm</td></tr>
+	<tr><td>T1</td><td>1</td><td>PE-65612NL***</td><td></td></tr>
+	<tr><td>C1, C2, C3, C4, C5, C6, C7, C8, C10, C11, C12***, C13***, C14, C15***</td><td>14</td><td>0.1uF</td><td>0402</td></tr>
 	<tr><td>C9</td><td>1</td><td>10-22uF</td><td>CP_EIA-7343-43</td></tr>
-	<tr><td>D1</td><td></td><td>DNP*</td><td>/td></tr>
-	<tr><td>R1, R2, R4, R5, R6, R7, R8</td><td>7</td><td>10K</td><td>0402</td></tr>
-	<tr><td>R3</td><td>1</td><td>300R</td><td>0402</td></tr>
+	<tr><td>D1</td><td></td><td>DNP*, short</td><td>/td></tr>
+	<tr><td>R1, R2, R4, R5, R6, R7, R8</td><td>7</td><td>10K ***</td><td>0402</td></tr>
+	<tr><td>R3</td><td>1</td><td>300R ***</td><td>0402</td></tr>
 	
 	
 </table>
 
+<p><strong>*</strong> - Do Not Place.</p>
+<p><strong>**</strong> - optional, no need if DIT pcb soldered on top of original DAC</p>
+<p><strong>***</strong> - optional, no need in DIT4192 is not available and you use external DIT</p>
 
-<strong>to be inserted</strong>
 
 <h3>Learning VERILOG</h3>
 <p>I did not have any experience in designing FPGA projects, and did not knew about verilog language anything. But it appeared, that my pseudo-language logic described above is almost verilog-like! So, after few weeks, the very first working code was written:
