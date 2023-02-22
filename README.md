@@ -139,5 +139,6 @@ Since we are dealing with 16 bits, a large number of DITs can be used, as they a
 
 <p float="left"><img src="images/pcbway1.jpg" width="50%"><img src="images/pcbway2.jpg" width="50%"></p>
 
+<p>Final design assumes, that the original PCM54HP will be desoldered from MT-32 mainboard, and then socketed on second footprint right on DIT pcb. After that, MT32-DIT cand be soldered or socketed on MT-32 main board. But for now, we just put on the DIT board right over PCM54HP IC.</p>
 
 <p><strong>To be continued</strong></p>
