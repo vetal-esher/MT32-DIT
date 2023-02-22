@@ -133,11 +133,11 @@ Since we are dealing with 16 bits, a large number of DITs can be used, as they a
 
 <h3>Making prototypes</h3>
 <p>I started with sandwich-like breadboard, trying to split the CMOS-TTL logic from TangNano. Different methods, using couple of variants (voltage dividers) and CD4050 were tried..</p>
-<p><img src="images/proto1.jpg"><img src="images/proto2.jpg"></p>
+<p float="left"><img src="images/proto1.jpg"><img src="images/proto2.jpg"></p>
 
 .. and then, when i finally decided to use CD4050, i have projected the PCB. The PCBs were made quick at PCBway factory, and i must say their quality is awesome, even for such pet projects like mine :) 
 
-<p><img src="images/pcbway1.jpg"><img src="images/pcbway2.jpg"></p>
+<p float="left"><img src="images/pcbway1.jpg"><img src="images/pcbway2.jpg"></p>
 
 
 <p><strong>To be continued</strong></p>
