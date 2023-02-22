@@ -110,7 +110,7 @@ There is only one magic figure involved in this plan, and here, I will honestly 
 <p><img src="images/after4050.png"></p>
 <h4>DIT</h4>
 <p>
-Since we are dealing with 16 bits, a large number of DITs can be used, as they all work at least with 16-bit RJ. For these purposes, I chose DIT4192, because I have it was already available after experimenting with the 18-bit DIT. Settings are typical:
+Since we are dealing with 16 bits, a large number of DITs can be used, as they all work at least with 16-bit RJ. For these purposes, I chose DIT4192, because I have it was already available after experimenting with the 18-bit DIT, but you can skip 4192 if you have not it (details below). Settings are typical:
 <table border="1">
 <tr><th colspan="2">DIT4192 Hardware mode</th></tr>
 <tr><td>Mode operation</td><td>Slave (SYNC and SCLK are inputs)</td></tr>
