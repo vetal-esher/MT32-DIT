@@ -44,7 +44,7 @@ If you listen to these pins in analog, it becomes clear that SYN1 is a clean sig
 analog as well, but too quiet to be recorded legibly; but since SYN2 is also mixed into the final mix, we'll do that too. 
 By the way, if you look at the unused outputs of the CD4051 CH4 and CH5, there will be [almost] crisp 32kHz:
 
-<p><img src="images/CH4.png"><img src="images/CH5.png"></p>
+<p float="left"><img src="images/CH4.png" width="50%"><img src="images/CH5.png" width="50%"></p>
 
 The INH control signal operates at a frequency of 256kHz, which means we will need to read all ports at this frequency. 
 Disabling all channels is necessary so that there is no false triggering on rising edge ABC states, when INH=1 tells us that 
