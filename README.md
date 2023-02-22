@@ -139,6 +139,105 @@ Since we are dealing with 16 bits, a large number of DITs can be used, as they a
 
 <p float="left"><img src="images/pcbway1.jpg" width="50%"><img src="images/pcbway2.jpg" width="50%"></p>
 
-<p>Final design assumes, that the original PCM54HP will be desoldered from MT-32 mainboard, and then socketed on second footprint right on DIT pcb. After that, MT32-DIT cand be soldered or socketed on MT-32 main board. But for now, we just put on the DIT board right over PCM54HP IC.</p>
+<p>Final design assumes, that the original PCM54HP will be desoldered from MT-32 mainboard, and then socketed on second footprint right on DIT pcb. After that, MT32-DIT can be soldered or socketed on MT-32 main board. But for now, we just put on the DIT board right over PCM54HP IC.</p>
+
+<h3>Learning VERILOG</h3>
+<p>I did not have any experience in designing FPGA projects, and did not knew about verilog language anything. But it appeared, that my pseudo-language logic described above is almost verilog-like! 
+	
+<pre>
+module top (
+        input mclk,             //master clock //pin 51
+        input clk_inh,          //256kHz INH clk input //pin 53
+        input [2:0] ch_id,      //cd4051 sample/hold controls a/b/c 128/64/32kHz //pin a 77 b 76 c 48
+        input [15:0] dac,       //parallel input from dac
+	input sys_rst_n,        //reset input
+        output sdata,           //16bit i2s sdata output  //pin 49
+        output wire wclk,       //i2s word select lrck output 32kHz //pin 31
+        output wire bck         //i2s bit clock output 1024MHz //pin32
+);
+
+wire [31:0] data;
+
+dac_decoder dac1(
+	.clk_inh(clk_inh),.ch_id(ch_id),.dac(dac),.data(data),.rst_n(sys_rst_n)
+);
+
+i2s_serializer ser1 (
+	.mclk(mclk),.sdata(sdata),.wclk(wclk),.bck(bck),.data(data),.rst_n(sys_rst_n)
+);
+
+endmodule
+
+
+module i2s_serializer (
+        input mclk,             	//master clock 16.384MHz
+	input [31:0] data,		//input channels register 
+	input wire rst_n,		//reset button	
+        output reg wclk,        	//i2s word select lrck output mclk/512 = 32kHz
+        output wire bck         	//[3] bit'mclk. i2s bit clock output //16bit * 2 * 32000 = 1.024 MHz (16.384/16)
+);
+reg [31:0] mclk_counter;       		//32bit counter
+assign bck=mclk_counter[3];     	//1.024MHz divide
+reg [31:0] data_buf;			//i2s output buffer 
+reg [4:0] cbit;				//0-15 current bit counter
+			
+initial begin
+	mclk_counter<=0; cbit<=0; wclk<=0; data_buf<=0;
+end
+
+always  @(posedge mclk,negedge rst_n) begin
+	if(!rst_n) begin mclk_counter<=0; end 
+	else begin mclk_counter<=mclk_counter+1; end
+end
+
+//i2s WCLK=0 left, =1 right
+always  @(negedge bck) begin			//send sdata from buffer
+	if (wclk==0) begin sdata<=data_buf[31-cbit]; end 				//LSYN send
+	else if (wclk==1) begin sdata<=data_buf[15-cbit]; end				//RSYN send
+	cbit<=cbit+1;
+	if (cbit==15 && wclk==0) begin cbit<=0; wclk<=1; end				//LSYN1 end
+	else if (cbit==15 && wclk==1) begin cbit<=0; wclk<=0; data_buf<=data; end 	//RSYN1 end, new buffer read
+end
+endmodule
+
+
+
+module dac_decoder (
+	input wire rst_n,
+        input clk_inh,          	//256kHz INH clk input
+        input [2:0] ch_id,    		//cd4051 sample/hold controls a/b/c
+        input [15:0] dac,       	//parallel input from dac
+	output reg [31:0] data		//32 bit
+);
+reg [15:0] ch0;				//LREV
+reg [15:0] ch6;				//RSYN2
+reg [15:0] ch2;				//LSYN2
+reg [15:0] ch1;				//RREV
+reg [15:0] ch7;				//RSYN1
+reg [15:0] ch3;				//LSYN1
+reg [15:0] sine;			//generated ch
+initial begin
+	ch0<=0; ch1<=0; ch2<=0; ch3<=0; ch6<=0; ch7<=0;
+end
+
+always  @(negedge clk_inh,negedge rst_n) begin
+	if(!rst_n) begin
+		dtr<=0; data<=0;
+	end 
+	else begin
+	case (ch_id)
+		4 : begin dtr<=0; end // empty
+		0 : begin dtr<=0; ch0<=dac; end // data[0]<=dac; end
+		6 : begin dtr<=0; ch6<=dac; end // data[6]<=dac; end
+		2 : begin dtr<=0; ch2<=dac; end // data[2]<=dac; end
+		5 : begin dtr<=0; end // empty
+		1 : begin dtr<=0; ch1<=dac; end // data[1]<=dac; end
+		7 : begin dtr<=0; ch7<=dac; end // data[7]<=dac; end
+		3 : begin dtr<=1; ch3<=dac; data = {dac,ch7}; end
+	endcase
+	end
+end
+endmodule
+</pre>
 
 <p><strong>To be continued</strong></p>
