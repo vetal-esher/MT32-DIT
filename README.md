@@ -174,6 +174,7 @@ module i2s_serializer (
         input mclk,             	//master clock 16.384MHz
 	input [31:0] data,		//input channels register 
 	input wire rst_n,		//reset button	
+	output reg sdata,   	    	//i2s sdata output
         output reg wclk,        	//i2s word select lrck output mclk/512 = 32kHz
         output wire bck         	//[3] bit'mclk. i2s bit clock output 
 					//16bit * 2 * 32000 = 1.024 MHz (16.384/16)
