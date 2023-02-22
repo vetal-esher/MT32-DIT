@@ -165,7 +165,7 @@ Since we are dealing with 16 bits, a large number of DITs can be used, as they a
 	<tr><td>C1, C2, C3, C4, C5, C6, C7, C8, C10, C11, C12***, C13***, C14, C15***</td><td>14</td><td>0.1uF</td><td>0402</td></tr>
 	<tr><td>C9</td><td>1</td><td>10-22uF</td><td>CP_EIA-7343-43</td></tr>
 </table>
-
+<p>If only specific component can be skipped, it's marked within "Reference" column, otherwise all components can be skipped if mark in "Value" column.</p>
 <p><strong>*</strong> - Do Not Place</p>
 <p><strong>**</strong> - optional, no need if DIT pcb soldered on top of the original DAC</p>
 <p><strong>***</strong> - optional, no need if DIT4192 is not available and you use external DIT</p>
