@@ -145,7 +145,7 @@ Since we are dealing with 16 bits, a large number of DITs can be used, as they a
 <table border=1>
 	<tr><th>Reference</th><th>Total</th><th>Value</th><th>Package</th></tr>
 	<tr><td>U1, U2, U3, U5</td><td>4</td><td>CD4050</td><td>SO-16</td></tr>
-	<tr><td>U4</td><td>1</td><td>Gowin 9K/td><td></td></tr>
+	<tr><td>U4</td><td>1</td><td>Gowin 9K</td><td></td></tr>
 	<tr><td>U6</td><td>1</td><td>PCM54HP</td><td>DIP-28</td></tr>
 	<tr><td>U8</td><td>1</td><td>DIT4192IPW</td><td>SSOP-28</td></tr>
 	<tr><td>U7</td><td>1</td><td>AP1117-33</td><td>SOT223-3_TABPIN2</td></tr>
