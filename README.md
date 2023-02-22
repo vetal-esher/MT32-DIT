@@ -245,4 +245,12 @@ end
 endmodule
 </pre>
 
+The first video of clean capture (sorry for low volume, it was at night) (clean stereo, no reverb):
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/VIkrG32c1l0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
+<h3>Problems and pitfalls</h3>
+
+It turned out, that the verilog firmware periodically won't work. Let me explain: the same perfect code, the same .fs can be flashed into TangNano9K many times, and in 99% cases the sound wont be clean. As a fpga synthesizer, i used opensource Yosys/Apicula/NextPNR, because due to war sanctions, we here in Russia were cut off from many programs, including Gowin IDE free license program.
+
 <p><strong>To be continued</strong></p>
