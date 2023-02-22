@@ -142,7 +142,7 @@ Since we are dealing with 16 bits, a large number of DITs can be used, as they a
 <p>Final design assumes, that the original PCM54HP will be desoldered from MT-32 mainboard, and then socketed on second footprint right on DIT pcb. After that, MT32-DIT can be soldered or socketed on MT-32 main board. But for now, we just put on the DIT board right over PCM54HP IC.</p>
 
 <h3>Learning VERILOG</h3>
-<p>I did not have any experience in designing FPGA projects, and did not knew about verilog language anything. But it appeared, that my pseudo-language logic described above is almost verilog-like! 
+<p>I did not have any experience in designing FPGA projects, and did not knew about verilog language anything. But it appeared, that my pseudo-language logic described above is almost verilog-like! So, after few weeks, the very first working code was written:
 	
 <pre>
 module top (
