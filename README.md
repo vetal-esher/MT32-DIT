@@ -286,12 +286,7 @@ It turned out, that the verilog firmware periodically won't work. Let me explain
 
 As a firmware synthesizer, i used opensource Yosys/Apicula/NextPNR. Using Gowin IDE for synthesis results were the same. <strike>It seems that prorerly working async FIFO is required.</strike> UPD2: It seems that the parallel data from DAC routed to FPGA is coming in corrupted way, <strike>and the reason is FPGA's pins default purposes. I must relocate some of DAC[15:0] bits to another pins.</strike> UPD3: <strong>Problem solved.</strong> It was bad contact between 2.54 headers that covers the PCM54HP. After bending the pins, the sound is good again. I think the way when you desolder DAC and resolder it on the DIT pcb is the only way to avoid bad contact problem.
 
-<strong>Example of clean sound:</strong>
-<audio controls src="audio/clean.mp3">
-
-<strong>This is what you should hear when some contacts are not connected:</strong>
-<audio controls src="audio/dirty_1.mp3">
-
-
+<strong><a href="audio/clean.mp3">Example of clean sound:</a></strong>
+<strong>And <a href="audio/dirty_1.mp3">this is what you should hear</a> when some bits are not connected:</strong>
 
 <p><strong>To be continued</strong></p>
