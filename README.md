@@ -284,6 +284,14 @@ The <a href="https://www.youtube.com/watch?v=VIkrG32c1l0">first video</a> of cle
 
 It turned out, that the verilog firmware periodically won't work. Let me explain: the same perfect code, the same .fs can be flashed into TangNano9K many times, and in 99% cases the sound wont be clean. Even worse: DIT pcb with working "clean sound" firmware turned off, then after hours, when you turn it on - it have already broken sound. Also, i found that the frequency of DTR (the flag that signals about full frame cycle pass) is slightly faster than WCLK (smth about 32.00010kHz@DTR vs exact 32.00000kHz@WCLK). I tried to use a couple of async FIFO versions between dac_decoder and i2s_serializer modules, but with no luck.
 
-As a firmware synthesizer, i used opensource Yosys/Apicula/NextPNR, because due to war sanctions, we here in Russia were cut off from many programs, including Gowin IDE free license program. UPD. Using Gowin IDE for synthesize, results were the same. <strike>It seems that prorerly working async FIFO is required.</strike> UPD2: It seems that the parallel data from DAC routed to FPGA is coming in corrupted way, <strike>and the reason is FPGA's pins default purposes. I must relocate some of DAC[15:0] bits to another pins.</strike> UPD3: <strong>Problem solved.</strong> It was bad contact between 2.54 headers that covers the PCM54HP. After bending the pins, the sound is good again. I think the way when you desolder DAC is the only way to avoid bad contact problem.
+As a firmware synthesizer, i used opensource Yosys/Apicula/NextPNR. Using Gowin IDE for synthesis results were the same. <strike>It seems that prorerly working async FIFO is required.</strike> UPD2: It seems that the parallel data from DAC routed to FPGA is coming in corrupted way, <strike>and the reason is FPGA's pins default purposes. I must relocate some of DAC[15:0] bits to another pins.</strike> UPD3: <strong>Problem solved.</strong> It was bad contact between 2.54 headers that covers the PCM54HP. After bending the pins, the sound is good again. I think the way when you desolder DAC and resolder it on the DIT pcb is the only way to avoid bad contact problem.
+
+<strong>Example of clean sound:</strong>
+<audio controls src="audio/clean.mp3">
+
+<strong>This is what you should hear when some contacts are not connected:</strong>
+<audio controls src="audio/dirty_1.mp3">
+
+
 
 <p><strong>To be continued</strong></p>
