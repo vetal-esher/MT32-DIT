@@ -227,7 +227,7 @@ end
 always  @(negedge bck) begin					//send sdata from buffer
 	if (wclk==0) begin sdata<=data_buf[31-cbit]; end 	//LSYN send
 	else if (wclk==1) begin sdata<=data_buf[15-cbit]; end	//RSYN send
-	cbit<=cbit+1;
+	cbit<=cbit+4'b01;
 	if (cbit==15 && wclk==0) 
 		begin cbit<=0; wclk<=1; end			//LSYN1 end
 	else if (cbit==15 && wclk==1) 
