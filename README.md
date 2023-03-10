@@ -284,12 +284,12 @@ The <a href="https://www.youtube.com/watch?v=VIkrG32c1l0">first video</a> of cle
 <p><strong><a href="audio/clean.mp3">Example of clean sound.</a></strong></p>
 <p><strong>And <a href="audio/dirty_1.mp3">this is what you should hear</a> when some bits are not connected</strong></p>
 
-2. I found that the frequency of DTR (the flag that signals about full frame cycle pass) is slightly faster than WCLK (smth about 32.00010kHz@DTR vs exact 32.00000kHz@WCLK). It may produce small clicks in the audio stream, so the logic need small FIFO.
+2. I found that the frequency of DTR (the flag that signals about full frame cycle pass) is slightly faster than WCLK (smth about 32.0010kHz@DTR vs exact 32.0000kHz@WCLK). It may produce small clicks in the audio stream, so the logic need some sync correction. 
 
 
 <h2>Mixing 6 digital channels to stereo pair</h2>
 
-The simplest logic of audio mixing is summing the levels. This works in digital too. Remember, that actual bitwidth of "old" Roland MT-32 is 15 (LSB bit is tied to the GND. So, we can use 17-bit buffer to sum all 3 channels and then divide them by 2 (simple bitshift). 
+The simplest logic of audio mixing is summing the levels. This works in digital too. Remember, that actual bitwidth of "old" Roland MT-32 is 15 (LSB bit is tied to the GND. So, we can use 17-bit buffer to sum all 3 channels and then divide them by 2 (simple bitshift). Also i thought that i can implement "reverb on/off" switch.  
 
 <p><strong>To be continued</strong></p>
 
