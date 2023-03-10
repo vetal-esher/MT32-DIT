@@ -128,7 +128,7 @@ Since we are dealing with 16 bits, a large number of DITs can be used, as they a
 <h3>Magic part</h3>
 <p>The FPGA <a href="https://wiki.sipeed.com/hardware/en/tang/Tang-Nano-9K/Nano-9K.html">Tang Nano 9K</a> was chosen for the magic part, so the "profit" plan was drawn:</p>
 <p><img src="images/profit2.png"></p>
-<p>And then the complete schematic of the "magic" part was done. Note the I2S connector, you can completely skip DIT4192 in schematic and use your favorite external DIT, or even just transport I2S to I2S receiver.</p>
+<p>And then the complete schematic of the "magic" part was done. Note the I2S connector, you can completely skip DIT4192 in schematic and use your favorite external DIT, or even just transport I2S to I2S receiver. I tested I2S with external WM8804 DIT board and it works perfectly.</p>
 <p><img src="images/9k-schematic.jpg"></p>
 
 <h3>Making prototypes</h3>
@@ -279,13 +279,18 @@ The <a href="https://www.youtube.com/watch?v=VIkrG32c1l0">first video</a> of cle
 
 <h3>Problems and pitfalls</h3>
 
-It turned out, that the verilog firmware periodically won't work. Let me explain: the same perfect code, the same .fs can be flashed into TangNano9K many times, and in 99% cases the sound wont be clean. Even worse: DIT pcb with working "clean sound" firmware turned off, then after hours, when you turn it on - it have already broken sound. Also, i found that the frequency of DTR (the flag that signals about full frame cycle pass) is slightly faster than WCLK (smth about 32.00010kHz@DTR vs exact 32.00000kHz@WCLK). I tried to use a couple of async FIFO versions between dac_decoder and i2s_serializer modules, but with no luck.
-
-As a firmware synthesizer, i used opensource Yosys/Apicula/NextPNR. Using Gowin IDE for synthesis results were the same. <strike>It seems that prorerly working async FIFO is required.</strike> UPD2: It seems that the parallel data from DAC routed to FPGA is coming in corrupted way, <strike>and the reason is FPGA's pins default purposes. I must relocate some of DAC[15:0] bits to another pins.</strike> UPD3: <strong>Problem solved.</strong> It was bad contact between 2.54 headers that covers the PCM54HP. After bending the pins, the sound is good again. I think the way when you desolder DAC and resolder it on the DIT pcb is the only way to avoid bad contact problem.
+1. <strong>Bad contact problem.</strong> It was nightmare to spend hours to find the source of noisy sound. After weeks(!) of resultless tries, i found that the way i put the pcb over original DAC is not reliable at all - some pins was not connected . I think the way when you desolder DAC and resolder it on the DIT pcb is the only way to avoid bad contact problem.
 
 <p><strong><a href="audio/clean.mp3">Example of clean sound.</a></strong></p>
 <p><strong>And <a href="audio/dirty_1.mp3">this is what you should hear</a> when some bits are not connected</strong></p>
 
+2. I found that the frequency of DTR (the flag that signals about full frame cycle pass) is slightly faster than WCLK (smth about 32.00010kHz@DTR vs exact 32.00000kHz@WCLK). It may produce small clicks in the audio stream, so the logic need small FIFO.
+
+
 <h2>Mixing 6 digital channels to stereo pair</h2>
 
+The simplest logic of audio mixing is summing the levels. This works in digital too. Remember, that actual bitwidth of "old" Roland MT-32 is 15 (LSB bit is tied to the GND. So, we can use 17-bit buffer for summing all 3 channels and then divide them by 2 (simple bitshift). 
+
 <p><strong>To be continued</strong></p>
+
+
