@@ -289,7 +289,7 @@ The <a href="https://www.youtube.com/watch?v=VIkrG32c1l0">first video</a> of cle
 
 <h2>Mixing 6 digital channels to stereo pair</h2>
 
-The simplest logic of audio mixing is summing the levels. This works in digital too. Remember, that actual bitwidth of "old" Roland MT-32 is 15 (LSB bit is tied to the GND. So, we can use 17-bit buffer for summing all 3 channels and then divide them by 2 (simple bitshift). 
+The simplest logic of audio mixing is summing the levels. This works in digital too. Remember, that actual bitwidth of "old" Roland MT-32 is 15 (LSB bit is tied to the GND. So, we can use 17-bit buffer to sum all 3 channels and then divide them by 2 (simple bitshift). 
 
 <p><strong>To be continued</strong></p>
 
