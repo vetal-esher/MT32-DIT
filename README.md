@@ -277,20 +277,51 @@ endmodule
 
 The <a href="https://www.youtube.com/watch?v=VIkrG32c1l0">first video</a> of clean capture (sorry for low volume, it was at night) (clean stereo, no reverb).
 
-<h3>Problems and pitfalls</h3>
-
-1. <strong>Bad contact problem.</strong> It was nightmare to spend hours to find the source of noisy sound. After weeks(!) of resultless tries, i found that the way i put the pcb over original DAC is not reliable at all - some pins was not connected . I think the way when you desolder DAC and resolder it on the DIT pcb is the only way to avoid bad contact problem.
-
-<p><strong><a href="audio/clean.mp3">Example of clean sound.</a></strong></p>
-<p><strong>And <a href="audio/dirty_1.mp3">this is what you should hear</a> when some bits are not connected</strong></p>
-
-2. I found that the frequency of DTR (the flag that signals about full frame cycle pass) is slightly faster than WCLK (smth about 32.0010kHz@DTR vs exact 32.0000kHz@WCLK). It may produce small clicks in the audio stream, so the logic need some sync correction. 
-
-
 <h2>Mixing 6 digital channels to stereo pair</h2>
 
 The simplest logic of audio mixing is summing the levels. This works in digital too. Remember, that actual bitwidth of "old" Roland MT-32 is 15 (LSB bit is tied to the GND. So, we can use 17-bit buffer to sum all 3 channels and then divide them by 2 (simple bitshift). Also i thought that i can implement "reverb on/off" switch.  
 
 <p><strong>To be continued</strong></p>
 
+<h2>Mounting</h2>
+<p>To avoid bad contact problem, the only way is to desolder DAC and socket it on the MT32-DIT pcb. This process is very hard to process without proper experience. First of all, you need to replace nearby caps with lower profile equivalents. Film caps are perfectly fit this objective. Then desolder the DAC itself.</p>
 
+<p float="left"><img src="images/montage/desolder.jpg" width="50%"><img src="images/montage/caps01.jpg" width="50%"></p>
+
+<p>While replacing the caps, it is time to think about picking A/B/C/INH directly from CD4051 demuxer. When you solder wires directly to DIP-package pins, wires tend to break when they bend, so i decided to solder a small breadboard over CD4051 for easy access to this signals.
+
+<p><img src="images/montage/abc_inh_brd.jpg"></p>
+<p>I will use PBD (2-row) 2.54 female headers for socketing the DIT pcb in DAC place. One row, of course, will be removed. Why 2-row? Just because i have much more PBD headers than PBS. You can use PBS if you want. Then socket the PCM54HP on DIT pcb.</p>
+
+<p float="left"><img src="images/montage/pdb_s.jpg" width="50%"><img src="images/montage/pdb_pcb.jpg" width="50%"></p>
+
+<p float="left"><img src="images/montage/pdb_dit01.jpg" width="50%"><img src="images/montage/dit_pls.jpg" width="50%"></p>
+
+<p>Remove the MT-32 board from the case. It's time to drill a hole and mount RCA. Find the place where you want it.</p>
+
+<p float="left"><img src="images/montage/rca01.jpg" width="33%"><img src="images/montage/rca02.jpg" width="33%"><img src="images/montage/rca03.jpg" width="33%"></p>
+
+<p>Final picture:</p>
+
+<p float="left"><img src="images/montage/pdb_dit02.jpg" width="50%"><img src="images/montage/dit_overall.jpg" width="50%"></p>
+
+
+<h3>P.S. Problems and pitfalls</h3>
+
+1. <strong>Bad contact problem.</strong> It was nightmare to spend hours to find the source of noisy sound. After weeks(!) of resultless tries, i found that the way i put the pcb over original DAC is not reliable at all - some pins was not connected . I think the way when you desolder DAC and resolder it on the DIT pcb is the only way to avoid bad contact problem (see "Mounting" chapter).
+
+<p><strong><a href="audio/clean.mp3">Example of clean sound.</a></strong></p>
+<p><strong>And <a href="audio/dirty_1.mp3">this is what you should hear</a> when some bits are not connected</strong></p>
+
+2. I found that the frequency of DTR (the flag that signals about full frame cycle pass) is slightly faster than WCLK (smth about 32.0010kHz@DTR vs exact 32.0000kHz@WCLK). It may (and will) produce small clicks in the audio stream about every 32000 ticks of DTR, so the logic need some sync correction (FIFO).
+
+<p><img src="images/clicks.png"></p>
+
+<h3>Links</h3>
+
+<p><a href="https://github.com/vetal-esher/MT32-DIT/blob/main/hardware/datasheets/mt-32_Service_Notes_First_Edition.pdf">Roland MT-32 service notes</a></p>
+<p><a href="https://github.com/vetal-esher/MT32-DIT/blob/main/hardware/datasheets/pcm54.pdf">PCM54HP datasheet</a></p>
+<p><a href="https://github.com/vetal-esher/MT32-DIT/blob/main/hardware/datasheets/hd14051bp.pdf">4051 datasheet</a></p>
+<p><a href="https://github.com/vetal-esher/MT32-DIT/blob/main/hardware/datasheets/cd4050b.pdf">CD4050B datasheet</a></p>
+<p><a href="https://github.com/vetal-esher/MT32-DIT/blob/main/hardware/datasheets/dit4192.pdf">DIT4192 datasheet</a></p>
+<p><a href="https://github.com/vetal-esher/MT32-DIT/blob/main/hardware/datasheets/I2SBUS.pdf">I2S bus specification</a></p>
