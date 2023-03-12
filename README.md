@@ -27,7 +27,7 @@ all channels. At the output of the demuxer, three pairs of analog channels are f
 processing in a low-pass filter. The LP filter should have a flat amplitude response in the 0-20kHz range and a high attenuation above 20kHz.
 </p>
 
-<p><img src="images/schematic.png"></p>
+<p><img src="images/inh_schematic.png"></p>
 
 <p>
 Bit depth and sampling frequency of MT-32 according to the declared characteristics - 15bit 32kHz. In the first version of MT-32 
@@ -123,13 +123,13 @@ Since we are dealing with 16 bits, a large number of DITs can be used, as they a
 </table>
 </p>
 
-<p><img src="images/dit-schematic.jpg"></p>
+<p><img src="images/dit-schematic.png"></p>
 
 <h3>Magic part</h3>
 <p>The FPGA <a href="https://wiki.sipeed.com/hardware/en/tang/Tang-Nano-9K/Nano-9K.html">TangNano9K</a> was chosen for the magic part, so the "profit" plan was drawn:</p>
 <p><img src="images/profit2.png"></p>
 <p>And then the complete schematic of the "magic" part was done. Note the I2S connector, you can completely skip DIT4192 in schematic and use your favorite external DIT, or even just transport I2S to I2S receiver. I tested I2S with external WM8804 DIT board and it works perfectly.</p>
-<p><img src="images/9k-schematic.jpg"></p>
+<p><img src="images/9k-schematic.png"></p>
 
 <h3>Making prototypes</h3>
 <p>I started with sandwich-like breadboard, trying to split the CMOS-TTL logic from TangNano. Different methods, using couple of variants (voltage dividers) and CD4050 were tried..</p>
@@ -283,7 +283,7 @@ endmodule
 
 The <a href="https://www.youtube.com/watch?v=VIkrG32c1l0">first video</a> of clean capture (sorry for low volume, it was at night) (clean stereo, no reverb).
 
-<h2>Mixing 6 digital channels to stereo pair</h2>
+<h3>Mixing 6 digital channels to stereo pair</h3>
 
 The simplest logic of audio mixing is summing the levels. This works in digital too. Remember, that actual bitwidth of "old" Roland MT-32 is 15 (LSB bit is tied to the GND. So, we can use 17-bit buffer to sum all 3 channels and then divide them by 2 (simple bitshift). Also i implemented "reverb on/off" switch tied to second button at TangNano9K devboard (first one is RESET button). 
 
@@ -398,21 +398,26 @@ endmodule
 </pre>
 </details>
 
-<p><strong>To be continued</strong></p>
-		
-<h3>P.S. Problems and pitfalls</h3>
+<h3>Solving clicks problem/h3>
+<p>I found that the frequency of DTR (the flag that signals about full frame cycle pass) is slightly faster than WCLK (smth about 32.0010kHz@DTR vs exact 32.0000kHz@WCLK). It may (and will) produce small clicks in the audio stream about every 32000 ticks of DTR.</p>
 
-1. <strong>Bad contact problem.</strong> It was nightmare to spend hours to find the source of noisy sound. After weeks(!) of resultless tries, i found that the way i put the pcb over original DAC is not reliable at all - some pins was not connected . I think the way when you desolder DAC and resolder it on the DIT pcb is the only way to avoid bad contact problem (see "Mounting" chapter).
+<p><img src="images/clicks.png"></p>
+
+<p>Even worse: there <strong>might be</strong> desync that can produce more clicks than useful audio data. </p>
+<p float="left"><img src="images/montage/clicks02.png" width="50%"><img src="images/montage/clicks03.png" width="50%"></p>
+
+<p>So the logic need some sync correction (FIFO or whatever).</p>
+
+
+<p><strong>to be continued..</strong></p>
+
+<h2>Mounting</h2>
+
+<strong>Bad contact problem.</strong> It was nightmare to spend hours to find the source of noisy sound. After weeks(!) of resultless tries, i found that the way i put the pcb over original DAC is not reliable at all - some pins was not connected . 
 
 <p><strong><a href="audio/clean.mp3">Example of clean sound.</a></strong></p>
 <p><strong>And <a href="audio/dirty_1.mp3">this is what you should hear</a> when some bits are not connected</strong></p>
 
-2. I found that the frequency of DTR (the flag that signals about full frame cycle pass) is slightly faster than WCLK (smth about 32.0010kHz@DTR vs exact 32.0000kHz@WCLK). It may (and will) produce small clicks in the audio stream about every 32000 ticks of DTR, so the logic need some sync correction (FIFO).
-
-<p><img src="images/clicks.png"></p>
-
-
-<h2>Mounting</h2>
 <p>To avoid bad contact problem, the only way is to desolder DAC and socket it on the MT32-DIT pcb. This process is very hard without proper experience. First of all, you need to replace nearby caps with lower profile equivalents. Film caps are perfectly fit this objective. Then desolder the DAC itself.</p>
 
 <p float="left"><img src="images/montage/desolder.jpg" width="50%"><img src="images/montage/caps01.jpg" width="50%"></p>
