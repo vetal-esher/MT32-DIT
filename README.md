@@ -397,13 +397,13 @@ endmodule
 </pre>
 </details>
 
-<h3>Solving clicks problem/h3>
+<h3>Solving clicks problem</h3>
 <p>I found that the frequency of DTR (the flag that signals about full frame cycle pass) is slightly faster than WCLK (smth about 32.0010kHz@DTR vs exact 32.0000kHz@WCLK). It may (and will) produce small clicks in the audio stream about every 32000 ticks of DTR.</p>
 
 <p><img src="images/clicks.png"></p>
 
 <p>Even worse: there <strong>might be</strong> desync that can produce more clicks than useful audio data. </p>
-<p float="left"><img src="images/montage/clicks02.png" width="50%"><img src="images/montage/clicks03.png" width="50%"></p>
+<p float="left"><img src="images/clicks02.png" width="50%"><img src="images/clicks03.png" width="50%"></p>
 
 <p>So the logic need some sync correction (FIFO or whatever).</p>
 
