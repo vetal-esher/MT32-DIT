@@ -150,7 +150,6 @@ Since we are dealing with 16 bits, a large number of DITs can be used, as they a
 	<tr><td>U6</td><td>1</td><td>PCM54HP**</td><td>DIP-28</td></tr>
 	<tr><td>U8</td><td>1</td><td>DIT4192IPW***</td><td>SSOP-28</td></tr>
 	<tr><td>U7</td><td>1</td><td>AP1117-33</td><td>SOT223-3_TABPIN2</td></tr>
-	<tr><td>U9</td><td>1</td><td>ADM6711***</td><td>SOT-343 (SC-70-4)</td></tr>
 	<tr><td>U10</td><td>2</td><td>PinHeader 1x28</td><td>P2.54mm</td></tr>
 	<tr><td>T1</td><td>1</td><td>PE-65612NL***</td><td>PE-65612NL</td></tr>
 	<tr><td>SW1</td><td>1</td><td>PWR SW</td><td>SW_DIP_SPSTx01_P2.54mm</td></tr>
@@ -162,7 +161,8 @@ Since we are dealing with 16 bits, a large number of DITs can be used, as they a
 	<tr><td>J4</td><td></td><td>DNP*</td><td></td></tr>
 	<tr><td>J5</td><td>1</td><td>PinHeader 1x05</td><td>P2.54mm</td></tr>
 	<tr><td>D1</td><td></td><td>DNP*, short</td><td></td></tr>	
-	<tr><td>C1, C2, C3, C4, C5, C6, C7, C8, C10, C11, C12***, C13***, C14, C15***</td><td>14</td><td>0.1uF</td><td>0402</td></tr>
+	<tr><td>C1, C2, C3, C4, C5, C6, C7, C8, C10, C11, C12***, C13***, C14</td><td>13</td><td>0.1uF</td><td>0402</td></tr>
+	<tr><td>C15***</td><td>1</td><td>10uF</td><td>0402</td></tr>
 	<tr><td>C9</td><td>1</td><td>10-22uF</td><td>CP_EIA-7343-43</td></tr>
 </table>
 <p>If only specific component can be skipped, it's marked within "Reference" column, otherwise all components can be skipped if mark is in "Value" column.</p>
