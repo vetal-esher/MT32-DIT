@@ -402,7 +402,7 @@ endmodule
 
 <p><img src="images/clicks.png"></p>
 
-<p>Even worse: there <strong>might be</strong> desync that can produce more clicks than useful audio data. </p>
+<p>There <strong>might be</strong> desync that can produce more clicks than useful audio data. The source of problem is in unstable crystal oscillator. </p>
 <p float="left"><img src="images/clicks02.png" width="50%"><img src="images/clicks03.png" width="50%"></p>
 
 <p>So the logic need some sync correction (FIFO or whatever).</p>
