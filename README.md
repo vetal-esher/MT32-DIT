@@ -19,7 +19,7 @@ It looks something like this (all frames are 16bit, order is assumed): [RSYN1][L
 <p>
 The advantage of a parallel DAC is that it works instantly, i.e. there is no delay at all in taking the current values 
 from the (essentially) resistor assembly and the next moment doing the task of transforming a completely different picture. <strong>Edit: 
-to tell the truth, there IS small delay (2.5ms) required to let the output settled the final value.</strong>
+to tell the truth, there IS small delay required to let the output settled the final value.</strong>
 </p>
 <p>The widely known CD4051 is engaged in demultiplexing all this porridge of audio data. Channel switching in the CD4051 is carried out 
 through the control lines mixed from LA and Reverb chips SH1 SH2 SH2 (SH - Sample / Hold), as well as the INH line, which turns on and off 
@@ -31,7 +31,7 @@ processing in a low-pass filter. The LP filter should have a flat amplitude resp
 
 <p>
 Bit depth and sampling frequency of MT-32 according to the declared characteristics - 15bit 32kHz. In the first version of MT-32 
-(the so-called "old"), the last 16th bit at the PCM54HP input is shorted to ground, and for that (15bit) reason the 14th bit fell out 
+(the so-called "old"), the last (actually, LSB) 16th bit at the PCM54HP input is shorted to ground, and for that (15bit) reason the 14th bit fell out 
 in the data bus itself (counting from zero). However, for us, the frame width will always be 16 bits (the 2nd MT-32 version has full 16bit bus). Theoretically, the channel  switching frequency 0-1-2-3-4-5-6-7 each time triggers a 0/1 state change in control signal A, so you can 
 expect 128kHz on this line,  64kHz on line B, and C with 32kHz respectively. But we don't know the order of the frames. Even if we 
 sequentially record all the states of the parallel bus, it will be useless if we do not know the order of switching ABC. In practice, 
@@ -126,7 +126,7 @@ Since we are dealing with 16 bits, a large number of DITs can be used, as they a
 <p><img src="images/dit-schematic.jpg"></p>
 
 <h3>Magic part</h3>
-<p>The FPGA <a href="https://wiki.sipeed.com/hardware/en/tang/Tang-Nano-9K/Nano-9K.html">Tang Nano 9K</a> was chosen for the magic part, so the "profit" plan was drawn:</p>
+<p>The FPGA <a href="https://wiki.sipeed.com/hardware/en/tang/Tang-Nano-9K/Nano-9K.html">TangNano9K</a> was chosen for the magic part, so the "profit" plan was drawn:</p>
 <p><img src="images/profit2.png"></p>
 <p>And then the complete schematic of the "magic" part was done. Note the I2S connector, you can completely skip DIT4192 in schematic and use your favorite external DIT, or even just transport I2S to I2S receiver. I tested I2S with external WM8804 DIT board and it works perfectly.</p>
 <p><img src="images/9k-schematic.jpg"></p>
@@ -172,8 +172,12 @@ Since we are dealing with 16 bits, a large number of DITs can be used, as they a
 
 
 <h3>Learning VERILOG</h3>
-<p>I did not have any experience in designing FPGA projects, and did not knew about verilog language anything. But it appeared, that my pseudo-language logic described above is almost verilog-like! So, after few weeks, the very first working code was written:
-	
+
+<p>I did not have any experience in designing FPGA projects, and did not knew about verilog language anything. But it appeared, that my pseudo-language logic described above is almost verilog-like! So, after few weeks, the very first working code was written.</p>
+
+<details>
+  <summary>First verilog code:</summary>	
+
 <pre>
 module top (
         input mclk,             //master clock //pin 51
@@ -275,11 +279,16 @@ end
 endmodule
 </pre>
 
+</details>
+
 The <a href="https://www.youtube.com/watch?v=VIkrG32c1l0">first video</a> of clean capture (sorry for low volume, it was at night) (clean stereo, no reverb).
 
 <h2>Mixing 6 digital channels to stereo pair</h2>
 
 The simplest logic of audio mixing is summing the levels. This works in digital too. Remember, that actual bitwidth of "old" Roland MT-32 is 15 (LSB bit is tied to the GND. So, we can use 17-bit buffer to sum all 3 channels and then divide them by 2 (simple bitshift). Also i implemented "reverb on/off" switch tied to second button at TangNano9K devboard (first one is RESET button). 
+
+<details>
+  <summary>Second verilog code:</summary>	
 		
 <pre>
 module top 	(
@@ -387,8 +396,7 @@ always  @(negedge clk_inh,negedge rst_n) begin
 end
 endmodule
 </pre>
-
-                         
+</details>
 
 <p><strong>To be continued</strong></p>
 		
@@ -405,14 +413,14 @@ endmodule
 
 
 <h2>Mounting</h2>
-<p>To avoid bad contact problem, the only way is to desolder DAC and socket it on the MT32-DIT pcb. This process is very hard to process without proper experience. First of all, you need to replace nearby caps with lower profile equivalents. Film caps are perfectly fit this objective. Then desolder the DAC itself.</p>
+<p>To avoid bad contact problem, the only way is to desolder DAC and socket it on the MT32-DIT pcb. This process is very hard without proper experience. First of all, you need to replace nearby caps with lower profile equivalents. Film caps are perfectly fit this objective. Then desolder the DAC itself.</p>
 
 <p float="left"><img src="images/montage/desolder.jpg" width="50%"><img src="images/montage/caps01.jpg" width="50%"></p>
 
-<p>While replacing the caps, it is time to think about picking A/B/C/INH directly from CD4051 demuxer. When you solder wires directly to DIP-package pins, wires tend to break when they bend, so i decided to solder a small breadboard over CD4051 for easy access to this signals.
+<p>While replacing the caps, it is time to think about picking A/B/C/INH directly from CD4051 demuxer. When you solder wires directly to DIP-package pins, wires tend to break when they bend, so i decided to solder a small protoboard over CD4051 for easy access to this signals.
 
 <p><img src="images/montage/abc_inh_brd.jpg"></p>
-<p>I will use PBD (2-row) 2.54 female headers for socketing the DIT pcb in DAC place. One row, of course, will be removed. Why 2-row? Just because i have much more PBD headers than PBS. You can use PBS if you want. Then socket the PCM54HP on DIT pcb.</p>
+<p>I used PBD (2-row) 2.54 female headers for socketing the DIT pcb in DAC place. One row, of course, needs to be removed. Why 2-row? Just because i had much more PBD headers than PBS. You can use PBS if you want. Then socket the PCM54HP on DIT pcb.</p>
 
 <p float="left"><img src="images/montage/pdb_s.jpg" width="50%"><img src="images/montage/pdb_pcb.jpg" width="50%"></p>
 
