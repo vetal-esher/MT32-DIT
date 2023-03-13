@@ -405,7 +405,7 @@ endmodule
 <p>There <strong>might be</strong> desync that can produce more clicks than useful audio data. The source of problem is in unstable crystal oscillator. </p>
 <p float="left"><img src="images/clicks02.png" width="50%"><img src="images/clicks03.png" width="50%"></p>
 
-<p>So the logic need some sync correction (FIFO or whatever).</p>
+<p>Note, that clicks are always single high peak, and desync is low (wclk is not ticking). For the clicks, the logic need some sync correction (FIFO or whatever).</p>
 
 
 <p><strong>to be continued..</strong></p>
