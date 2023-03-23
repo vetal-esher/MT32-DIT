@@ -306,14 +306,14 @@ reg signed [15:0] left; reg signed [15:0] right;
 </pre>
 </details>
 
-<h3>Fixing problems</h3>
+<h3>Possible problems</h3>
 
 <h4>Clicks</h4>
 <p>At the final stage, i found that the frequency of DTR (the flag that signals about full frame cycle pass) is slightly faster than WCLK (smth about 32.0010kHz@DTR vs exact 32.0000kHz@WCLK). After some hardware tests, i found that the frequencies for A/B/C/INH are derived from 32.768kHz crystal and cannot be divided strict to 32000Hz (note: "new" MT-32 device uses 16.384MHz crystal and <b>this</b> frequency can be divided to 32000Hz by 512, so "new" MT-32 is more accurate). I thought that this was the reason of random clicks in the stream, <strong>but no</strong>.</p>
 
 <p><img src="images/clicks.png"></p>
 
-<p>The origin of clicks is that you cannot operate with registers with multiple actions. You need to separate them by some clock ticks. So, mixing logic
+<p>The first reason is <b><a target="_blank" href="https://en.wikipedia.org/wiki/Roland_MT-32#Digital_overflow">digital overflow</a></b> bug. Just lower the volume to 90%. The second reason is that you cannot operate with registers with multiple actions in one clock tick. You need pipeline. So, mixing logic
 <pre>
             if (!rev_sw) begin l<=dac; r<=rsyn1; end 
             else begin l<=dac+lrev+lsyn2; r<=rsyn1+rrev+rsyn2; end
