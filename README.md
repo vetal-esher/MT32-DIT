@@ -286,96 +286,7 @@ The <a href="https://www.youtube.com/watch?v=VIkrG32c1l0">first video</a> of cle
 
 The simplest logic of audio mixing is summing the levels. This works in digital too. Remember, that actual bitwidth of "old" Roland MT-32 is 15 (LSB bit is tied to the GND. So, we can use 17-bit buffer to sum all 3 channels and then divide them by 2 (simple bitshift). Also i implemented "reverb on/off" switch tied to second button at TangNano9K devboard (first one is RESET button). 
 
-<details>
-  <summary>Second verilog code:</summary>	
-		
 <pre>
-module top 	(
-        input mclk,             //master clock //pin 51
-        input clk_inh,          //256kHz INH clk input //pin 53
-        input [2:0] ch_id,      //cd4051 sample/hold controls a/b/c 128/64/32kHz //pin a 77 b 76 c 48
-        input [15:0] dac,       //parallel input from dac
-        input sys_rst_n,        //reset input
-        input rev_sw,           //reverb switch
-        output wire dtr,        //write FIFO clock //pin68
-        output sdata,           //16bit i2s sdata output  //pin32
-        output wire wclk,       //i2s word select lrck output 32kHz //pin31
-        output wire bck         //i2s bit clock output 1024MHz //pin49
-);
-wire [31:0] data;
-dac_decoder dac1(
-    .clk_inh(clk_inh),.ch_id(ch_id),.dac(dac),.data(data),.rst_n(sys_rst_n),.dtr(dtr),.rev_sw(rev_sw)
-);
-i2s_serializer ser1 (
-	.mclk(mclk),.sdata(sdata),.wclk(wclk),.bck(bck),.data(data),.rst_n(sys_rst_n)
-);
-endmodule
-
-module i2s_serializer (
-        input wire rst_n,		//reset signal
-        input mclk,			//master clock 16.384MHz
-        input [31:0] data,		//input data 
-        output reg sdata,		//i2s sdata output
-        output reg wclk,		//i2s word select lrck output mclk/512 = 32kHz
-        output bck			//i2s bit clock output //16bit * 2 * 32000 = 1.024 MHz (16.384/16)
-);
-reg [31:0] mclk_counter;       		//32bit counter
-assign bck=mclk_counter[2];     //OSC divide
-reg [31:0] data_buf;		//i2s output buffer 
-reg [4:0] cbit;		//current bit counter
-			
-initial begin
-	mclk_counter<=0; cbit<=0; wclk<=0; data_buf<=0;
-end
-
-always  @(posedge mclk,negedge rst_n) begin			
-	if (!rst_n) begin mclk_counter<=0; end 
-	else begin 
-		mclk_counter<=mclk_counter+1; 
-	end
-end
-
-always  @(negedge bck) begin
-	if (wclk==0) begin sdata<=data_buf[31-cbit]; end 				//left send
-	else if (wclk==1) begin sdata<=data_buf[15-cbit]; end				//right send
-	cbit<=cbit+4'b01;
-
-	if (cbit==15 && wclk==0) begin cbit<=0; wclk<=1; end				//left end
-	else if (cbit==15 && wclk==1) begin cbit<=0; wclk<=0; data_buf<=data; end 	//right end, new buffer read
-
-end
-endmodule
-
-
-module dac_decoder (
-        input wire rst_n,		//reset signal
-        input rev_sw,           	//reverb switch
-        input clk_inh,			//256kHz INH clk input
-        input [2:0] ch_id,		//cd4051 sample/hold controls a/b/c
-        input [15:0] dac,		//parallel input from dac
-        output reg [31:0] data,		//32 bit dac output
-        output reg dtr			//data ready flag for FIFO
-);
-reg [15:0] lrev;				//LREV  ch0
-reg [15:0] rsyn2;				//RSYN2 ch6
-reg [15:0] lsyn2;				//LSYN2 ch2
-reg [15:0] rrev;				//RREV  ch1
-reg [15:0] rsyn1;				//RSYN1 ch7
-reg [15:0] lsyn1;				//LSYN1 ch3
-reg [16:0] l;
-reg [16:0] r;
-reg [15:0] left;
-reg [15:0] right;
-initial begin
-    data<=0; lrev<=0; rrev<=0; lsyn1<=0; rsyn1<=0; lsyn2<=0; rsyn2<=0; dtr<=0;
-    l<=0; r<=0;
-end
-
-always  @(negedge clk_inh,negedge rst_n) begin
-	if (!rst_n) begin
-		dtr<=0; data<=0;
-	end 
-	else begin
 	case (ch_id)
 		4 : begin dtr<=0; end // empty
 		0 : begin dtr<=0; lrev<=dac; end // LREV
@@ -391,24 +302,58 @@ always  @(negedge clk_inh,negedge rst_n) begin
             end 
             
 	endcase
-	end
-end
-endmodule
 </pre>
 </details>
 
-<h3>Solving clicks problem</h3>
-<p>I found that the frequency of DTR (the flag that signals about full frame cycle pass) is slightly faster than WCLK (smth about 32.0010kHz@DTR vs exact 32.0000kHz@WCLK). It may (and will) produce small clicks in the audio stream about every 32000 ticks of DTR.</p>
+<h3>Fixing problems</h3>
+
+<h4>Clicks</h4>
+<p>At the final stage, i found that the frequency of DTR (the flag that signals about full frame cycle pass) is slightly faster than WCLK (smth about 32.0010kHz@DTR vs exact 32.0000kHz@WCLK). I thought that this was the reason of random clicks in the stream.</p>
 
 <p><img src="images/clicks.png"></p>
 
-<p>There <strong>might be</strong> desync that can produce more clicks than useful audio data. The source of problem is in unstable crystal oscillator. </p>
+<p>The origin of clicks is that you cannot operate with registers with multiple actions. You need to separate them by some clock ticks. So, mixing logic
+<pre>
+            if (!rev_sw) begin l<=dac; r<=rsyn1; end 
+            else begin l<=dac+lrev+lsyn2; r<=rsyn1+rrev+rsyn2; end
+            left[15:0]<=l[15:0]; right[15:0]<=r[15:0]; data<={left,right};
+</pre>
+must be separated:
+<pre>
+always  @(negedge clk_inh,negedge rst_n) begin
+	if (!rst_n) begin
+		dtr<=0; data<=0;
+	end 
+	else begin
+	case (ch_id)
+		4 : begin dtr<=0; <b>left[15:0]<=l[15:0]; right[15:0]<=r[15:0];</b> end // empty
+		0 : begin dtr<=0; lrev<=dac; end // LREV
+		6 : begin dtr<=0; rsyn2<=dac; end // RSYN2
+		2 : begin dtr<=0; lsyn2<=dac; end // LSYN2
+		5 : begin dtr<=1; <b>data<={left,right};</b> end // empty
+		1 : begin dtr<=0; rrev<=dac; end // RREV
+		7 : begin dtr<=0; rsyn1<=dac; end // RSYN1
+		3 : begin dtr<=0; lsyn1<=dac;     // LSYN1
+              		<b>if (!rev_sw) begin l<=dac; r<=rsyn1; end 
+              		else begin l<=dac+lrev+lsyn2; r<=rsyn1+rrev+rsyn2; end</b>
+            	    end 
+	endcase
+	end
+end
+</pre>
+
+<h4>Desync</h4>
+<p>Another problem can appear, there <strong>might be</strong> desync that can produce more clicks than useful audio data. The source of problem is in unstable crystal oscillator - you need to check the DIT pcb for shorts and leakages. </p>
 <p float="left"><img src="images/clicks02.png" width="50%"><img src="images/clicks03.png" width="50%"></p>
 
-<p>Note, that clicks are always single high peak, and desync is low (wclk is not ticking). For the clicks, the logic need some sync correction (FIFO or whatever).</p>
+<h4>Digital DC offset</h4>
+
+<p><strong>To be continued</strong></p>
 
 
-<p><strong>to be continued..</strong></p>
+<h4>Post LPF processing</h4>
+
+<p><strong>To be continued</strong></p>
 
 <h2>Mounting</h2>
 
