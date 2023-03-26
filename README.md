@@ -313,7 +313,7 @@ reg signed [15:0] left; reg signed [15:0] right;
 
 <p><img src="images/clicks.png"></p>
 
-<p>The first reason is <b><a target="_blank" href="https://en.wikipedia.org/wiki/Roland_MT-32#Digital_overflow">digital overflow</a></b> bug. Just lower the volume to 90%. The second reason is that you cannot operate with registers with multiple actions in one clock tick. You need pipeline. So, mixing logic
+<p>The first reason is that you cannot operate with registers with multiple actions in one clock tick. You need pipeline. So, mixing logic
 <pre>
             if (!rev_sw) begin l<=dac; r<=rsyn1; end 
             else begin l<=dac+lrev+lsyn2; r<=rsyn1+rrev+rsyn2; end
@@ -342,6 +342,13 @@ always  @(negedge clk_inh,negedge rst_n) begin
 	end
 end
 </pre>
+
+Also, within this logic, you need to avoid update output data register when it might be in "read status" at serializer. Setting values need some time to be set, so we don't update the data when it is in stage of reading.
+
+<pre>
+5 : begin dtr<=1; if (drq==0) begin data<={left,right}; dtw<=1; end end // empty
+</pre>
+
 
 <h4>Desync</h4>
 <p>Another problem can appear, there <strong>might be</strong> desync that can produce more clicks than useful audio data. The source of problem is in unstable crystal oscillator - you need to check the DIT pcb for shorts and leakages. </p>
