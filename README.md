@@ -349,7 +349,7 @@ Also, within this logic, you need to avoid update output data register when it m
 5 : begin dtr<=1; if (drq==0) begin data<={left,right}; dtw<=1; end end // empty
 </pre>
 
-<p>After that, recording more than 3 hours shows that the clicks were gone, completely.</p>
+<p>After that, recording more than 3 hours showed that the clicks were gone, completely.</p>
 <p><img src="images/3hours.png"></p>
 
 
