@@ -349,6 +349,9 @@ Also, within this logic, you need to avoid update output data register when it m
 5 : begin dtr<=1; if (drq==0) begin data<={left,right}; dtw<=1; end end // empty
 </pre>
 
+<p>After that, recording more than 3 hours shows that the clicks were gone, completely.</p>
+<p><img src="images/3hours.png"></p>
+
 
 <h4>Desync</h4>
 <p>Another problem can appear, there <strong>might be</strong> desync that can produce more clicks than useful audio data. The source of problem is in unstable crystal oscillator - you need to check the DIT pcb for shorts and leakages. </p>
