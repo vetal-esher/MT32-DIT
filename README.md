@@ -1,6 +1,6 @@
 # MT32-DIT
 <h3>Adding digital output to legendary Roland MT-32</h3>
-<p>Project status: ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬜⬜ 85%</p>
+<p>Project status: ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬜ 90%</p>
 <p>
 This project can be considered part #2 of the digitalization of old synthesizers. In the first part I described <a href="https://github.com/vetal-esher/18bit-DIT">how you can add a  digital outpu</a>t to almost any synthesizer (where the DAC circuit uses standard L/R combined I2S) by using the AK4103AVF</p>
 
@@ -360,7 +360,7 @@ Also, within this logic, you need to avoid update output data register when it m
 
 <h4>Digital DC offset</h4>
 
-<p><strong>To be continued</strong></p>
+<p><strong>Updated 22.06.2024</strong></p> It's seems that there's nothing we can do (at least with 1st revision of MT-32) since DAC's LSB bit is tied to ground and there is dropped 14 bit in schematic. When LSB bit will be used, there will be no DC offset at all.
 
 
 <h4>Post LPF processing</h4>
