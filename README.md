@@ -360,7 +360,7 @@ Also, within this logic, you need to avoid update output data register when it m
 
 <h4>Digital DC offset</h4>
 
-<p><strong>Updated 22.06.2024</strong></p> It's seems that there's nothing we can do (at least with 1st revision of MT-32) since DAC's LSB bit is tied to ground and there is dropped 14 bit in schematic. When LSB bit will be used, there will be no DC offset at all.
+<p><strong>Updated 25.06.2024</strong></p> It's seems that there's nothing we can do (at least with 1st revision of MT-32) since DAC's LSB bit is tied to ground and there is 14 bit dropped in DAC schematic. When LSB bit will be used, there will be no DC offset at all. After all, i checked the PCB and found that the Bit14(=D14) used in schematic bus between LA32/Reverb/DAC - on real PCB has no route out from LA32 and Reverb chips, and the pin 27 (D14) on LA32 has no activity on oscilloscope at all.
 
 
 <h4>Post LPF processing</h4>
