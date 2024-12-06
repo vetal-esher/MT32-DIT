@@ -1,0 +1,2 @@
+There is some debug pins (drq,dtw,dtr) defined to check how the state machine is working or not.
+Also offset was used to see what can be done with DC offset problem.
