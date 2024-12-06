@@ -1,0 +1,10 @@
+In 0.4 version the project was splitted into two:
+
+1. MT32-DIT-module
+Main board designed with TangNano 9K support. 
+Small noise reduction mod is also added according to PCM54HP datasheet.
+
+
+2. MT32-DIT-board
+
+Small two-sided board with DIT4192 or WM8804 support. You can solder only one side with preferrable DIT IC and connect into I2S connector @MT32-DIT-module.
