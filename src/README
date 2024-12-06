@@ -1,3 +1,6 @@
 There is some debug pins (drq,dtw,dtr) defined to check how the state machine is working or not.
 Also offset was used to see what can be done with DC offset problem.
 In older revisions (which is now cleared), there also was FIFO module, but i decide that there's no need in FIFO at all.
+
+I use MSYS64 to flash the Tangnano with command:
+openFPGALoader -b tangnano9k -f MT32-DIT.fs
