@@ -1,0 +1,80 @@
+EESchema-LIBRARY Version 2.4
+#encoding utf-8
+#
+# Texas Instruments DIT4096IPW
+#
+DEF DIT4096IPW U 0 40 Y Y 1 L N
+F0 "U" 0 200 50 H V L CNN 
+F1 "DIT4096IPW" 0 300 50 H V L CNN 
+F2 "Texas_Instruments-DIT4096IPW-*" 0 400 50 H I L CNN 
+F3 "http://www.ti.com/general/docs/lit/getliterature.tsp?genericPartNumber=DIT4096&fileType=pdf" 0 500 50 H I L CNN 
+F4 "" 0 600 50 H I L CNN "ADC ResolutionBits"
+F5 "" 0 700 50 H I L CNN "ADC Sample Rate kSPS"
+F6 "" 0 800 50 H I L CNN "Audio Data Format"
+F7 "" 0 900 50 H I L CNN "Audio Delay per Channelms"
+F8 "MO-153" 0 1000 50 H I L CNN "Code  JEDEC"
+F9 "Package Specification" 0 1100 50 H I L CNN "Component Link 2 Description"
+F10 "http://www.ti.com/litv/pdf/mpds364" 0 1200 50 H I L CNN "Component Link 2 URL"
+F11 "" 0 1300 50 H I L CNN "Control Interface"
+F12 "" 0 1400 50 H I L CNN "Control Mode"
+F13 "SBOS225B" 0 1500 50 H I L CNN "Datasheet Version"
+F14 "" 0 1600 50 H I L CNN "Depop Circuitry"
+F15 "" 0 1700 50 H I L CNN "Digital Audio Interface"
+F16 "" 0 1800 50 H I L CNN "Digital Supply up to 5 VV"
+F17 "" 0 1900 50 H I L CNN "Dynamic RangedB"
+F18 "" 0 2000 50 H I L CNN "Inputs"
+F19 "" 0 2100 50 H I L CNN "Jitterps"
+F20 "Surface Mount" 0 2200 50 H I L CNN "Mounting Technology"
+F21 "" 0 2300 50 H I L CNN "Output"
+F22 "28-Pin Plastic Thin Small Outline Package 9.7 x 4.4 mm Body ,0.65 mm Pitch" 0 2400 50 H I L CNN "Package Description"
+F23 "revG, Feb-2011" 0 2500 50 H I L CNN "Package Version"
+F24 "5" 0 2600 50 H I L CNN "Power SupplyV"
+F25 "" 0 2700 50 H I L CNN "Sample Rate maxSPS"
+F26 "96" 0 2800 50 H I L CNN "Sampling RateMaxkHz"
+F27 "Digital Audio Transmitter" 0 2900 50 H I L CNN "Sub Family"
+F28 "" 0 3000 50 H I L CNN "Supply VoltagesV"
+F29 "" 0 3100 50 H I L CNN "THD Nd B"
+F30 "" 0 3200 50 H I L CNN "SRC Channels"
+F31 "IC" 0 3300 50 H I L CNN "category"
+F32 "19301177" 0 3400 50 H I L CNN "ciiva ids"
+F33 "a7cc1a0efa220af4" 0 3500 50 H I L CNN "library id"
+F34 "Texas Instruments" 0 3600 50 H I L CNN "manufacturer"
+F35 "PW0028A" 0 3700 50 H I L CNN "package"
+F36 "1464325991" 0 3800 50 H I L CNN "release date"
+F37 "Yes" 0 3900 50 H I L CNN "rohs"
+F38 "4F0DD9C0-5AA8-4E41-84DE-1AF12FB0F69F" 0 4000 50 H I L CNN "vault revision"
+F39 "yes" 0 4100 50 H I L CNN "imported"
+DRAW
+X NC/CSS 1 100 -700 100 R 40 40 1 1 I 
+X CDOUT/COPY/C 2 100 -800 100 R 40 40 1 1 B 
+X CCLK/L 3 100 -900 100 R 40 40 1 1 I C
+X CDIN/CLK1 4 1500 -1100 100 L 40 40 1 1 I 
+X ~CS~/CLK0 5 1500 -1000 100 L 40 40 1 1 I 
+X MCLK 6 1500 -900 100 L 40 40 1 1 I C
+X VIO 7 100 -1900 100 R 40 40 1 1 W 
+X DGND 8 1500 -1900 100 L 40 40 1 1 W 
+X RXP/FMT0 9 100 -400 100 R 40 40 1 1 I 
+X NC/FMT1 10 100 -500 100 R 40 40 1 1 I 
+X SCLK 11 100 -100 100 R 40 40 1 1 B 
+X SYNC 12 100 0 100 R 40 40 1 1 B 
+X SDATA 13 100 -200 100 R 40 40 1 1 I 
+X M/~S~ 14 100 -300 100 R 40 40 1 1 I 
+X ~RST~ 15 100 -1500 100 R 40 40 1 1 I 
+X DGND 16 1500 -2000 100 L 40 40 1 1 W 
+X TX- 17 1500 -200 100 L 40 40 1 1 O 
+X TX+ 18 1500 0 100 L 40 40 1 1 O 
+X VDD 19 100 -2000 100 R 40 40 1 1 W 
+X NC/MDAT 20 1500 -1600 100 L 40 40 1 1 I 
+X NC/MONO 21 1500 -1700 100 L 40 40 1 1 I 
+X ~INT~/~AUDIO~ 22 100 -1000 100 R 40 40 1 1 B 
+X ~EMPH~ 23 100 -1100 100 R 40 40 1 1 I 
+X NC/BLSM 24 1500 -1400 100 L 40 40 1 1 I 
+X BLS 25 1500 -1300 100 L 40 40 1 1 B 
+X NC/V 26 100 -1300 100 R 40 40 1 1 I 
+X U 27 100 -1200 100 R 40 40 1 1 I 
+X MODE 28 100 -1700 100 R 40 40 1 1 I 
+S 200 100 1400 -2100 1 1 0 f
+ENDDRAW
+ENDDEF
+#
+# End Library
