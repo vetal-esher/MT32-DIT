@@ -1,9 +1,9 @@
 In 0.4 version the project was splitted into two:
 
-1. MT32-DIT-module
+1. MT32-DIT-v0.4
 Main board designed with TangNano 9K support. 
 Small noise reduction mod is also added according to PCM54HP datasheet.
-
+I2S pins moved to top right corner.
 
 2. MT32-DIT-board
 
