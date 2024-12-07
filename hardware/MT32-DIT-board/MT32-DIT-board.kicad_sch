@@ -2888,6 +2888,12 @@
 		)
 	)
 	(junction
+		(at 161.671 78.3955)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "018dd8f8-a8de-4f23-a863-59cd3e40c4bf")
+	)
+	(junction
 		(at 213.487 56.515)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -2948,6 +2954,12 @@
 		(uuid "4bac7fdc-2386-44b0-b855-7da45c9ac375")
 	)
 	(junction
+		(at 164.846 80.9244)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "5459268d-70c3-45da-9c12-063e0988e1f1")
+	)
+	(junction
 		(at 161.671 96.139)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -2988,12 +3000,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "717fa758-331a-41ff-9f99-5620e6f56979")
-	)
-	(junction
-		(at 175.006 80.899)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "72c85f65-193c-4d93-b99e-ccb94ea9f185")
 	)
 	(junction
 		(at 121.539 91.44)
@@ -3104,16 +3110,16 @@
 		(uuid "ca7d6ea3-65b7-43b7-9faf-8f6286161764")
 	)
 	(junction
-		(at 161.671 78.359)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "d06b60f9-c919-4fc1-b37a-7d061c4c08c9")
-	)
-	(junction
 		(at 253.365 41.275)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "d7750377-4747-4b51-b810-af22c5541b92")
+	)
+	(junction
+		(at 175.006 78.3955)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "de4f3423-53ba-41d7-805d-04426c66f8ee")
 	)
 	(junction
 		(at 155.321 73.279)
@@ -3122,10 +3128,16 @@
 		(uuid "e6655fbf-f950-4cfd-8100-1326cdd3e067")
 	)
 	(junction
-		(at 175.006 78.359)
+		(at 164.846 88.519)
 		(diameter 0)
 		(color 0 0 0 0)
-		(uuid "fbf51225-4768-486d-beb0-d5b8e94cee46")
+		(uuid "e672ebaa-5523-4ac2-8fe7-74ab2ebe7a36")
+	)
+	(junction
+		(at 175.006 80.9244)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "ffc6e4c0-ce3e-42c7-b47d-f12f8a32c0fd")
 	)
 	(no_connect
 		(at 217.043 56.515)
@@ -3153,17 +3165,7 @@
 	)
 	(wire
 		(pts
-			(xy 161.671 88.519) (xy 161.671 78.359)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "03731c70-a97a-421f-89b9-af356bf423c3")
-	)
-	(wire
-		(pts
-			(xy 164.846 80.899) (xy 164.846 88.519)
+			(xy 164.846 80.9244) (xy 164.846 88.519)
 		)
 		(stroke
 			(width 0)
@@ -3200,6 +3202,16 @@
 			(type default)
 		)
 		(uuid "10dbae83-fbef-48ff-bc11-9a6f48be2b41")
+	)
+	(wire
+		(pts
+			(xy 161.671 78.359) (xy 161.671 78.3955)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "12f56241-07b0-474e-9522-e0734fbc3e5c")
 	)
 	(wire
 		(pts
@@ -3333,6 +3345,16 @@
 	)
 	(wire
 		(pts
+			(xy 164.846 88.519) (xy 164.846 88.5444)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "29c44e60-3390-4775-a2c9-97df625a705a")
+	)
+	(wire
+		(pts
 			(xy 217.043 46.355) (xy 204.851 46.355)
 		)
 		(stroke
@@ -3433,16 +3455,6 @@
 	)
 	(wire
 		(pts
-			(xy 164.846 78.359) (xy 161.671 78.359)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "400e9f94-8971-441e-bd45-29deeb34a572")
-	)
-	(wire
-		(pts
 			(xy 151.1046 78.359) (xy 151.1046 78.9686)
 		)
 		(stroke
@@ -3460,6 +3472,16 @@
 			(type default)
 		)
 		(uuid "45a8a144-a3b2-4c8a-a08f-1bcba4b5a14e")
+	)
+	(wire
+		(pts
+			(xy 164.846 78.3955) (xy 161.671 78.3955)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4cbfb35a-315c-483d-b3e9-ede90a6ef78c")
 	)
 	(wire
 		(pts
@@ -3743,7 +3765,7 @@
 	)
 	(wire
 		(pts
-			(xy 175.006 78.359) (xy 175.006 80.899)
+			(xy 175.006 78.3844) (xy 175.006 78.3955)
 		)
 		(stroke
 			(width 0)
@@ -3780,6 +3802,16 @@
 			(type default)
 		)
 		(uuid "86154bac-1e88-4c63-be4b-f2614e7d1537")
+	)
+	(wire
+		(pts
+			(xy 161.671 78.3955) (xy 161.671 88.519)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "898fe54d-90e9-404a-8870-da2072b1d903")
 	)
 	(wire
 		(pts
@@ -4220,6 +4252,16 @@
 			(type default)
 		)
 		(uuid "c67dc3c0-cb7d-4300-9b8d-c4b67dd0dee4")
+	)
+	(wire
+		(pts
+			(xy 175.006 78.3955) (xy 175.006 80.9244)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "cd68c234-fe4c-45c9-b91e-40cf0b32f49f")
 	)
 	(wire
 		(pts
@@ -6892,7 +6934,7 @@
 	)
 	(symbol
 		(lib_id "Jumper:Jumper_2_Open")
-		(at 169.926 80.899 0)
+		(at 169.926 80.9244 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -6900,7 +6942,7 @@
 		(dnp no)
 		(uuid "5149690f-91d5-44c1-afb6-0bea85a8c105")
 		(property "Reference" "JP9"
-			(at 169.926 75.1037 0)
+			(at 169.926 75.1291 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6908,7 +6950,7 @@
 			)
 		)
 		(property "Value" "M/S"
-			(at 180.34 80.899 0)
+			(at 180.34 80.9244 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6916,7 +6958,7 @@
 			)
 		)
 		(property "Footprint" "Jumper:SolderJumper-2_P1.3mm_Open_Pad1.0x1.5mm"
-			(at 169.926 80.899 0)
+			(at 169.926 80.9244 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6925,7 +6967,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 169.926 80.899 0)
+			(at 169.926 80.9244 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6934,7 +6976,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 169.926 80.899 0)
+			(at 169.926 80.9244 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8809,7 +8851,7 @@
 	)
 	(symbol
 		(lib_id "Jumper:Jumper_2_Open")
-		(at 169.926 78.359 0)
+		(at 169.926 78.3955 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -8817,7 +8859,7 @@
 		(dnp no)
 		(uuid "a15051cd-28bc-43bc-b4b8-d8eb95f903ba")
 		(property "Reference" "JP8"
-			(at 169.926 72.5637 0)
+			(at 169.926 72.6002 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8825,7 +8867,7 @@
 			)
 		)
 		(property "Value" "CLK0"
-			(at 180.594 78.232 0)
+			(at 180.594 78.2685 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8833,7 +8875,7 @@
 			)
 		)
 		(property "Footprint" "Jumper:SolderJumper-2_P1.3mm_Open_Pad1.0x1.5mm"
-			(at 169.926 78.359 0)
+			(at 169.926 78.3955 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8842,7 +8884,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 169.926 78.359 0)
+			(at 169.926 78.3955 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8851,7 +8893,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 169.926 78.359 0)
+			(at 169.926 78.3955 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8876,7 +8918,7 @@
 	)
 	(symbol
 		(lib_id "power:GNDREF")
-		(at 175.006 80.899 90)
+		(at 175.006 80.9244 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -8884,7 +8926,7 @@
 		(dnp no)
 		(uuid "a2b6e463-bae8-48c3-a9b2-f6eb8bb57de1")
 		(property "Reference" "#PWR09"
-			(at 181.356 80.899 0)
+			(at 181.356 80.9244 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8893,7 +8935,7 @@
 			)
 		)
 		(property "Value" "GNDREF"
-			(at 178.943 83.693 90)
+			(at 178.943 83.7184 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8901,7 +8943,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 175.006 80.899 0)
+			(at 175.006 80.9244 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8910,7 +8952,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 175.006 80.899 0)
+			(at 175.006 80.9244 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8919,7 +8961,7 @@
 			)
 		)
 		(property "Description" ""
-			(at 175.006 80.899 0)
+			(at 175.006 80.9244 0)
 			(effects
 				(font
 					(size 1.27 1.27)

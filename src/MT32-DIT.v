@@ -24,17 +24,17 @@ endmodule
 
 module i2s_serializer (
         input wire rst_n,		//reset signal
-        input mclk,			    //master clock 16.384MHz
+        input mclk,			//master clock 16.384MHz
         input [31:0] data,		//input data 
-        output reg drq, 	    //data request
+        output reg drq, 		//data request
         output reg sdata,		//i2s sdata output
         output reg wclk,		//i2s word select lrck output mclk/512 = 32kHz
-        output bck			    //i2s bit clock output //16bit * 2 * 32000 = 1.024 MHz (16.384/16)
+        output bck			//i2s bit clock output //16bit * 2 * 32000 = 1.024 MHz (16.384/16)
 );
 reg [31:0] mclk_counter;       		//32bit counter
-assign bck=mclk_counter[3];     //OSC divide
-reg [31:0] data_buf;		//i2s output buffer 
-reg [4:0] cbit;		//current bit counter
+assign bck=mclk_counter[3];     	//OSC divide
+reg [31:0] data_buf;			//i2s output buffer 
+reg [4:0] cbit;				//current bit counter
 reg sync;
 			
 initial begin
@@ -69,18 +69,18 @@ module dac_decoder (
         input rev_sw,           	//reverb switch
         input clk_inh,			//256kHz INH clk input
         input [2:0] ch_id,		//cd4051 sample/hold controls a/b/c
-        input signed [15:0] dac,		//parallel input from dac
-        input drq,                  //data request
-        output reg dtw,         //data write flag
+        input signed [15:0] dac,	//parallel input from dac
+        input drq,                  	//data request
+        output reg dtw,         	//data write flag
         output reg [31:0] data,		//32 bit dac output
         output reg dtr			//data ready flag for FIFO
 );
-reg signed [15:0] lrev;				//LREV  ch0
-reg signed [15:0] rsyn2;				//RSYN2 ch6
-reg signed [15:0] lsyn2;				//LSYN2 ch2
-reg signed [15:0] rrev;				//RREV  ch1
-reg signed [15:0] rsyn1;				//RSYN1 ch7
-reg signed [15:0] lsyn1;				//LSYN1 ch3
+reg signed [15:0] lrev;			//LREV  ch0
+reg signed [15:0] rsyn2;		//RSYN2 ch6
+reg signed [15:0] lsyn2;		//LSYN2 ch2
+reg signed [15:0] rrev;			//RREV  ch1
+reg signed [15:0] rsyn1;		//RSYN1 ch7
+reg signed [15:0] lsyn1;		//LSYN1 ch3
 reg signed [16:0] l;
 reg signed [16:0] r;
 reg signed [15:0] left;
