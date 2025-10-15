@@ -1,6 +1,6 @@
 # MT32-DIT
 <h3>Adding digital output to legendary Roland MT-32</h3>
-<p>Project status: ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬜ 90%</p>
+<p>Project status: ⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬛⬜ 95%</p>
 <p>
 This project can be considered part #2 of the digitalization of old synthesizers. In the first part I described <a href="https://github.com/vetal-esher/18bit-DIT">how you can add a  digital outpu</a>t to almost any synthesizer (where the DAC circuit uses standard L/R combined I2S) by using the AK4103AVF</p>
 
@@ -288,29 +288,62 @@ The <a href="https://www.youtube.com/watch?v=VIkrG32c1l0">first video</a> of cle
 The simplest logic of audio mixing is summing the levels. This works in digital too. Remember, that actual bitwidth of "old" Roland MT-32 is 15 (LSB bit is tied to the GND. So, we can use 17-bit buffer to sum all 3 channels and then divide them by 2 (simple bitshift). Also i implemented "reverb on/off" switch tied to second button at TangNano9K devboard (first one is RESET button). 
 
 <pre>
-reg signed [16:0] l; reg signed [16:0] r;
-reg signed [15:0] left; reg signed [15:0] right;
+reg [15:0] lsyn1, lsyn2, lrev, rsyn1, rsyn2, rrev;	//channels from LA32 and Reverb ICs
+reg [15:0] left,right; //registers that go to i2s serializer
+reg [16:0] l,r; //internal left/right registers 
+reg frame_sent; //"frame was sent to i2s serializer" flag
+
+initial begin
+    data<=0; lrev<=0; rrev<=0; rsyn1<=0; lsyn2<=0; rsyn2<=0; 
+    l<=0; r<=0; left<=0; right<=0; frame_sent<=0;
+end
+
+localparam [15:0] OFFSET = 16'd16344; //Digital DC offset fix //when synth has no activity this is "amplitude zero" sample value
+
+always  @(negedge clk_inh) begin
+	if (!rst_n) begin
+		data<=0; frame_sent<=0;
+	end else begin
 	case (ch_id)
-		4 : begin dtr<=0; end // empty
-		0 : begin dtr<=0; lrev<=dac; end // LREV
-		6 : begin dtr<=0; rsyn2<=dac; end // RSYN2
-		2 : begin dtr<=0; lsyn2<=dac; end // LSYN2
-		5 : begin dtr<=0; end // empty
-		1 : begin dtr<=0; rrev<=dac; end // RREV
-		7 : begin dtr<=0; rsyn1<=dac; end // RSYN1
-		3 : begin dtr<=1; lsyn1<=dac;     // LSYN1
-            if (!rev_sw) begin l<=dac; r<=rsyn1; end 
-            else begin l<=dac+lrev+lsyn2; r<=rsyn1+rrev+rsyn2; end
-            left[15:0]<=l[15:0]; right[15:0]<=r[15:0]; data<={left,right};
-            end 
+		4 : begin // empty
+			if (!rev_sw) begin 
+				l<=lsyn1; r<=rsyn1; 
+			end else begin 
+				l<=lsyn1+lsyn2+lrev; r<=rsyn1+rsyn2+rrev; 
+			end
+	            end 
+		0 : begin // LREV
+			left <= l-OFFSET; right <= r-OFFSET;
+			frame_sent<=0; 
+			lrev<=dac;
+		    end 
+		6 : begin // RSYN2
+			rsyn2<=dac; 
+			if (!drq) begin data<={left,right}; frame_sent<=1; end
+		    end 
+		2 : begin // LSYN2
+			lsyn2<=dac; 
+			if (!drq && !frame_sent) begin data<={left,right}; frame_sent<=1; end //retry data register update if previous attempt was not successful
+		    end 
+		5 : begin // empty
+			if (!drq && !frame_sent) begin data<={left,right}; frame_sent<=1; end //and again, retry data register update if previous attempt was not successful
+		    end
+		1 : begin rrev<=dac;  end // RREV
+		7 : begin rsyn1<=dac; end // RSYN1
+		3 : begin lsyn1<=dac; end // LSYN1
 	endcase
+	end
+end
+
 </pre>
 </details>
 
 <h3>Possible problems</h3>
 
 <h4>Clicks</h4>
-<p>At the final stage, i found that the frequency of DTR (the flag that signals about full frame cycle pass) is slightly faster than WCLK (smth about 32.0010kHz@DTR vs exact 32.0000kHz@WCLK). After some hardware tests, i found that the frequencies for A/B/C/INH are derived from 32.768kHz crystal and cannot be divided strict to 32000Hz (note: "new" MT-32 device uses 16.384MHz crystal and <b>this</b> frequency can be divided to 32000Hz by 512, so "new" MT-32 is more accurate). I thought that this was the reason of random clicks in the stream, <strong>but no</strong>.</p>
+<p>At the final stage, i found that the frequency of DTR (the flag that signals about full frame cycle pass) is slightly faster than WCLK (smth about 32.0010kHz@DTR vs exact 32.0000kHz@WCLK). 
+I
+</p>
 
 <p><img src="images/clicks.png"></p>
 
@@ -320,35 +353,9 @@ reg signed [15:0] left; reg signed [15:0] right;
             else begin l<=dac+lrev+lsyn2; r<=rsyn1+rrev+rsyn2; end
             left[15:0]<=l[15:0]; right[15:0]<=r[15:0]; data<={left,right};
 </pre>
-must be separated:
-<pre>
-always  @(negedge clk_inh,negedge rst_n) begin
-	if (!rst_n) begin
-		dtr<=0; data<=0;
-	end 
-	else begin
-	case (ch_id)
-		4 : begin dtr<=0; <b>left[15:0]<=l[15:0]; right[15:0]<=r[15:0];</b> end // empty
-		0 : begin dtr<=0; lrev<=dac; end // LREV
-		6 : begin dtr<=0; rsyn2<=dac; end // RSYN2
-		2 : begin dtr<=0; lsyn2<=dac; end // LSYN2
-		5 : begin dtr<=1; <b>data<={left,right};</b> end // empty
-		1 : begin dtr<=0; rrev<=dac; end // RREV
-		7 : begin dtr<=0; rsyn1<=dac; end // RSYN1
-		3 : begin dtr<=0; lsyn1<=dac;     // LSYN1
-              		<b>if (!rev_sw) begin l<=dac; r<=rsyn1; end 
-              		else begin l<=dac+lrev+lsyn2; r<=rsyn1+rrev+rsyn2; end</b>
-            	    end 
-	endcase
-	end
-end
-</pre>
+must be separated.
 
 Also, within this logic, you need to avoid update output data register when it might be in "read status" at serializer. Setting values need some time to be set, so we don't update the data when it is in stage of reading.
-
-<pre>
-5 : begin dtr<=1; if (drq==0) begin data<={left,right}; dtw<=1; end end // empty
-</pre>
 
 <p>After that, recording more than 3 hours showed that the clicks were gone, completely.</p>
 <p><img src="images/3hours.png"></p>
@@ -360,7 +367,9 @@ Also, within this logic, you need to avoid update output data register when it m
 
 <h4>Digital DC offset</h4>
 
-<p><strong>Updated 25.06.2024</strong></p> It's seems that there's nothing we can do (at least with 1st revision of MT-32) since DAC's LSB bit is tied to ground and there is 14 bit dropped in DAC schematic. When LSB bit will be used, there will be no DC offset at all. After all, i checked the PCB and found that the Bit14(=D14) used in schematic bus between LA32/Reverb/DAC - on real PCB has no route out from LA32 and Reverb chips, and the pin 27 (D14) on LA32 has no activity on oscilloscope at all.
+<p><strong>Updated 15.10.2025</strong></p> It's seems that there's nothing we can do (at least with 1st revision of MT-32) since DAC's LSB bit is tied to ground and there is 14 bit dropped in DAC schematic. When LSB bit will be used, there will be no DC offset at all. After all, i checked the PCB and found that the Bit14(=D14) used in schematic bus between LA32/Reverb/DAC - on real PCB has no route out from LA32 and Reverb chips, and the pin 27 (D14) on LA32 has no activity on oscilloscope at all.
+You can slightly lower DC offset decrementing each sample value by 16344 (that the value of amplitude zero when there's no sound from MT-32), but this will give you only 6dB fix.
+</p>
 
 
 <h4>Post LPF processing</h4>
