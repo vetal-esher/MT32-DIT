@@ -22,7 +22,7 @@ end
 //localparam [15:0] OFFSET = 16'd24536; //Digital DC offset fix
 localparam [15:0] OFFSET = 16'd16344; //Digital DC offset fix
 
-always  @(negedge clk_inh,negedge rst_n) begin
+always  @(negedge clk_inh) begin
 	if (!rst_n) begin
 		data<=0; frame_sent<=0;
 	end else begin
