@@ -2,15 +2,14 @@
 
 module dac_decoder (
         input wire rst_n,		//reset signal
-        input rev_sw,           //reverb switch
+        input rev_sw,           	//reverb switch
         input clk_inh,			//256kHz INH clk input
         input [2:0] ch_id,		//cd4051 sample/hold controls a/b/c
-        input [15:0] dac,	    //parallel input from dac
+        input [15:0] dac,	    	//parallel input from dac
         input drq,                 	//data request
-        output reg dtw,         	//data write flag
         output reg [31:0] data		//32 bit dac output
 );
-reg [15:0] lsyn2, lrev, rsyn1, rsyn2, rrev;	//
+reg [15:0] lsyn1, lsyn2, lrev, rsyn1, rsyn2, rrev;	//channels from LA32 and Reverb ICs
 reg [15:0] left,right;
 reg [16:0] l,r;
 reg frame_sent;
@@ -26,24 +25,34 @@ localparam [15:0] OFFSET = 16'd16344; //Digital DC offset fix
 always  @(negedge clk_inh,negedge rst_n) begin
 	if (!rst_n) begin
 		data<=0; frame_sent<=0;
-	end 
-	else begin
+	end else begin
 	case (ch_id)
-		4 : begin 
-                left<= l-OFFSET; right<= r-OFFSET;
-                frame_sent<=0; 
-            end // empty
-		0 : begin lrev<=dac; frame_sent<=0; end // LREV
-		6 : begin rsyn2<=dac; frame_sent<=0; end // RSYN2
-		2 : begin lsyn2<=dac; frame_sent<=0; end // LSYN2
-		5 : begin if (!drq) begin data<={left,right}; frame_sent<=1; end end // empty
-		1 : begin rrev<=dac; if (!drq && !frame_sent) begin data<={left,right}; frame_sent<=1; end end // RREV
-		7 : begin rsyn1<=dac; if (!drq && !frame_sent) begin data<={left,right}; frame_sent<=1; end end // RSYN1
-		3 : begin             
-              frame_sent<=0;                                             // LSYN1
-              if (!rev_sw) begin l<=dac; r<=rsyn1; end 
-              else begin l<=dac+lsyn2+lrev; r<=rsyn1+rsyn2+rrev; end
-            end 
+		4 : begin // empty
+			if (!rev_sw) begin 
+				l<=lsyn1; r<=rsyn1; 
+			end else begin 
+				l<=lsyn1+lsyn2+lrev; r<=rsyn1+rsyn2+rrev; 
+			end
+	            end 
+		0 : begin // LREV
+			left <= l-OFFSET; right <= r-OFFSET;
+			frame_sent<=0; 
+			lrev<=dac;
+		    end 
+		6 : begin // RSYN2
+			rsyn2<=dac; 
+			if (!drq) begin data<={left,right}; frame_sent<=1; end
+		    end 
+		2 : begin // LSYN2
+			lsyn2<=dac; 
+			if (!drq && !frame_sent) begin data<={left,right}; frame_sent<=1; end 
+		    end 
+		5 : begin // empty
+			if (!drq && !frame_sent) begin data<={left,right}; frame_sent<=1; end 
+		    end
+		1 : begin rrev<=dac;  end // RREV
+		7 : begin rsyn1<=dac; end // RSYN1
+		3 : begin lsyn1<=dac; end // LSYN1
 	endcase
 	end
 end
@@ -64,7 +73,7 @@ BUFG bck_bufg_inst (.I(bck_int), .O(bck));
 reg [31:0] data_buf;	    		//i2s output buffer 
 reg [4:0] cbit;				        //current bit counter
 
-always  @(posedge mclk,negedge rst_n) begin			
+always  @(posedge mclk) begin			
 	if (!rst_n) begin mclk_counter<=0; end 
 	else begin 
 		mclk_counter<=mclk_counter+1;
@@ -74,26 +83,26 @@ end
 
 always  @(negedge bck_int) begin
 	if (!rst_n) begin 
-        cbit<=0; wclk<=0; data_buf<=0;
-    end else begin 
+		cbit<=0; wclk<=0; data_buf<=0;
+	end else begin 
 
-	if (wclk==0) begin sdata<=data_buf[31-cbit]; end 				    //LSYN send
-	else if (wclk==1) begin sdata<=data_buf[15-cbit]; end				//RSYN send
+		if (wclk==0) begin sdata<=data_buf[31-cbit]; end 	//LSYN send
+		else if (wclk==1) begin sdata<=data_buf[15-cbit]; end	//RSYN send
 
-    cbit<=cbit+4'b01;
+		cbit<=cbit+4'b01;
 
-	if (cbit==15 && wclk==0) begin cbit<=0; wclk<=1; drq<=0; end			        	//LSYN end
-	else if (cbit==15 && wclk==1) begin cbit<=0; wclk<=0; drq<=1; data_buf<=data; end 	//RSYN end, new buffer read
-    else begin drq<=0; end
+		if (cbit==15 && wclk==0) begin cbit<=0; wclk<=1; drq<=0; end		        	//LSYN end
+		else if (cbit==15 && wclk==1) begin cbit<=0; wclk<=0; drq<=1; data_buf<=data; end 	//RSYN end, new buffer read
+		else begin drq<=0; end
 
-    end
+	end
 end
 endmodule
 
 
 module top 	(
-        input mclk,             //master clock //pin 51
-        input clk_inh,          //256kHz INH clk input //pin 53
+        input mclk,             //master clock 16.384MHz //pin 51
+        input clk_inh,          //256kHz INH clk input   //pin 53
         input [2:0] ch_id,      //cd4051 sample/hold controls a/b/c 128/64/32kHz //pin a 77 b 76 c 48
         input [15:0] dac,       //parallel input from dac
         input sys_rst_n,        //reset input
@@ -111,4 +120,5 @@ dac_decoder dac1(
 i2s_serializer ser1 (
 	.mclk(mclk),.sdata(sdata),.wclk(wclk),.bck(bck),.data(data),.rst_n(sys_rst_n),.drq(drq)
 );
+
 endmodule

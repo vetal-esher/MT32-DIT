@@ -1,4 +1,4 @@
-There is some debug pins (drq,dtw,dtr) defined to check how the state machine is working or not.
+There was some debug pins (drq,dtw,dtr) defined to check how the state machine is working or not. Now only drq survived.
 Also offset was used to see what can be done with DC offset problem.
 In older revisions (which is now cleared), there also was FIFO module, but i decide that there's no need in FIFO at all.
 
