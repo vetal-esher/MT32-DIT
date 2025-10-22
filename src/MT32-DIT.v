@@ -5,54 +5,49 @@ module dac_decoder (
         input rev_sw,           	//reverb switch
         input clk_inh,			//256kHz INH clk input
         input [2:0] ch_id,		//cd4051 sample/hold controls a/b/c
-        input [15:0] dac,	    	//parallel input from dac
+        input signed [15:0] dac,	//parallel input from dac
         input drq,                 	//data request
         output reg [31:0] data		//32 bit dac output
 );
-reg [15:0] lsyn1, lsyn2, lrev, rsyn1, rsyn2, rrev;	//channels from LA32 and Reverb ICs
-reg [15:0] left,right;
-reg [16:0] l,r;
+reg signed [15:0] lsyn1, lsyn2, rsyn1, rsyn2, rrev;	//channels from LA32 and Reverb ICs
+reg signed [15:0] left,right;
+reg signed [16:0] l,r;
 reg frame_sent;
 
 initial begin
-    data<=0; lrev<=0; rrev<=0; rsyn1<=0; lsyn2<=0; rsyn2<=0; 
+    data<=0; rrev<=0; rsyn1<=0; lsyn2<=0; rsyn2<=0; 
     l<=0; r<=0; left<=0; right<=0; frame_sent<=0;
 end
 
 //localparam [15:0] OFFSET = 16'd24536; //Digital DC offset fix
-localparam [15:0] OFFSET = 16'd16344; //Digital DC offset fix
+localparam signed [15:0] OFFSET = 16'd0; //Digital DC offset fix
 
 always  @(negedge clk_inh) begin
 	if (!rst_n) begin
 		data<=0; frame_sent<=0;
 	end else begin
 	case (ch_id)
-		4 : begin // empty
-			if (!rev_sw) begin 
-				l<=lsyn1; r<=rsyn1; 
-			end else begin 
-				l<=lsyn1+lsyn2+lrev; r<=rsyn1+rsyn2+rrev; 
-			end
-	            end 
-		0 : begin // LREV
-			left <= l-OFFSET; right <= r-OFFSET;
-			frame_sent<=0; 
-			lrev<=dac;
+     		7 : begin // RSYN1
+			rsyn1<=dac; 
+			left <= l[15:0]-OFFSET; right <= r[15:0]-OFFSET; frame_sent<=0;  
 		    end 
 		6 : begin // RSYN2
 			rsyn2<=dac; 
-			if (!drq) begin data<={left,right}; frame_sent<=1; end
-		    end 
-		2 : begin // LSYN2
-			lsyn2<=dac; 
-			if (!drq && !frame_sent) begin data<={left,right}; frame_sent<=1; end 
-		    end 
-		5 : begin // empty
-			if (!drq && !frame_sent) begin data<={left,right}; frame_sent<=1; end 
+			if (!drq) begin data<={left,right}; frame_sent<=1; end 
 		    end
-		1 : begin rrev<=dac;  end // RREV
-		7 : begin rsyn1<=dac; end // RSYN1
+		5 : begin // empty
+			if (!drq && !frame_sent) begin data<={left,right}; frame_sent<=1; end  
+		    end 
+		4 : begin // empty
+			if (!drq && !frame_sent) begin data<={left,right}; frame_sent<=1; end 
+		    end 
 		3 : begin lsyn1<=dac; end // LSYN1
+		2 : begin lsyn2<=dac; end // LSYN2
+		1 : begin rrev<=dac; end  // RREV
+		0 : begin frame_sent<=0;  // LREV
+			if (!rev_sw) begin  l<=lsyn1; r<=rsyn1;  end else 
+			begin l<=lsyn1+lsyn2+dac; r<=rsyn1+rsyn2+rrev; end
+ 	     	    end 
 	endcase
 	end
 end
@@ -104,7 +99,7 @@ module top 	(
         input mclk,             //master clock 16.384MHz //pin 51
         input clk_inh,          //256kHz INH clk input   //pin 53
         input [2:0] ch_id,      //cd4051 sample/hold controls a/b/c 128/64/32kHz //pin a 77 b 76 c 48
-        input [15:0] dac,       //parallel input from dac
+        input signed [15:0] dac,//parallel input from dac
         input sys_rst_n,        //reset input
         input rev_sw,           //reverb switch
         output wire drq,        //data request //pin69
