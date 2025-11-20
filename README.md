@@ -285,52 +285,41 @@ The <a href="https://www.youtube.com/watch?v=VIkrG32c1l0">first video</a> of cle
 
 <h3>Mixing 6 digital channels to stereo pair</h3>
 
-The simplest logic of audio mixing is summing the levels. This works in digital too. Remember, that actual bitwidth of "old" Roland MT-32 is 15 (LSB bit is tied to the GND. So, we can use 17-bit buffer to sum all 3 channels and then divide them by 2 (simple bitshift). Also i implemented "reverb on/off" switch tied to second button at TangNano9K devboard (first one is RESET button). 
+The simplest logic of audio mixing is summing the levels. This works in digital too. Remember, that actual bitwidth of "old" Roland MT-32 is 15 (LSB bit is tied to the GND. So, 
+we can use 17-bit buffer to sum all 3 channels. Also i implemented "reverb on/off" switch tied to second button at TangNano9K devboard (first one is RESET button). 
+OFFSET parameter used to avoid digital overflow problem when summing all channels.
 
 <pre>
-reg [15:0] lsyn1, lsyn2, lrev, rsyn1, rsyn2, rrev;	//channels from LA32 and Reverb ICs
-reg [15:0] left,right; //registers that go to i2s serializer
-reg [16:0] l,r; //internal left/right registers 
-reg frame_sent; //"frame was sent to i2s serializer" flag
+reg signed [15:0] lsyn1, lsyn2, rsyn1, rsyn2, rrev;	//channels from LA32 and Reverb ICs
+reg signed [15:0] left,right;
+reg signed [16:0] l,r;
 
 initial begin
-    data<=0; lrev<=0; rrev<=0; rsyn1<=0; lsyn2<=0; rsyn2<=0; 
-    l<=0; r<=0; left<=0; right<=0; frame_sent<=0;
+    data<=0; rrev<=0; rsyn1<=0; lsyn2<=0; rsyn2<=0; 
+    l<=0; r<=0; left<=0; right<=0; dtr<=0;
 end
 
-localparam [15:0] OFFSET = 16'd16344; //Digital DC offset fix //when synth has no activity this is "amplitude zero" sample value
+localparam signed [15:0] OFFSET = 16'd8192; //Digital DC offset fix
 
 always  @(negedge clk_inh) begin
 	if (!rst_n) begin
-		data<=0; frame_sent<=0;
+		data<=0; dtr<=0;
 	end else begin
 	case (ch_id)
-		4 : begin // empty
-			if (!rev_sw) begin 
-				l<=lsyn1; r<=rsyn1; 
-			end else begin 
-				l<=lsyn1+lsyn2+lrev; r<=rsyn1+rsyn2+rrev; 
-			end
-	            end 
-		0 : begin // LREV
-			left <= l-OFFSET; right <= r-OFFSET;
-			frame_sent<=0; 
-			lrev<=dac;
+     		7 : begin // RSYN1
+			rsyn1<=dac; dtr<=1;
+			left <= l[15:0]-OFFSET; right <= r[15:0]-OFFSET;
 		    end 
-		6 : begin // RSYN2
-			rsyn2<=dac; 
-			if (!drq) begin data<={left,right}; frame_sent<=1; end
-		    end 
-		2 : begin // LSYN2
-			lsyn2<=dac; 
-			if (!drq && !frame_sent) begin data<={left,right}; frame_sent<=1; end //retry data register update if previous attempt was not successful
-		    end 
-		5 : begin // empty
-			if (!drq && !frame_sent) begin data<={left,right}; frame_sent<=1; end //and again, retry data register update if previous attempt was not successful
-		    end
-		1 : begin rrev<=dac;  end // RREV
-		7 : begin rsyn1<=dac; end // RSYN1
-		3 : begin lsyn1<=dac; end // LSYN1
+		6 : begin rsyn2<=dac; dtr<=0; end // RSYN2
+		5 : begin data<={left,right}; dtr<=0; end // empty
+		4 : begin dtr<=1; end // empty
+		3 : begin lsyn1<=dac; dtr<=1; end // LSYN1
+		2 : begin lsyn2<=dac; dtr<=1; end // LSYN2
+		1 : begin rrev<=dac;  dtr<=1; end // RREV
+		0 : begin dtr<=0; // LREV
+			if (!rev_sw) begin  l<=lsyn1; r<=rsyn1;  end else 
+			begin l<=lsyn1+lsyn2+dac; r<=rsyn1+rsyn2+rrev; end
+ 	     	end 
 	endcase
 	end
 end
@@ -347,13 +336,7 @@ I
 
 <p><img src="images/clicks.png"></p>
 
-<p>The first reason is that you cannot operate with registers with multiple actions in one clock tick. You need pipeline. So, mixing logic
-<pre>
-            if (!rev_sw) begin l<=dac; r<=rsyn1; end 
-            else begin l<=dac+lrev+lsyn2; r<=rsyn1+rrev+rsyn2; end
-            left[15:0]<=l[15:0]; right[15:0]<=r[15:0]; data<={left,right};
-</pre>
-must be separated.
+<p>The first reason is that you cannot operate with registers with multiple actions in one clock tick. You need pipeline. So, mixing logic with OFFSET must be separated.
 
 Also, within this logic, you need to avoid update output data register when it might be in "read status" at serializer. Setting values need some time to be set, so we don't update the data when it is in stage of reading.
 
@@ -372,7 +355,7 @@ You can slightly lower DC offset decrementing each sample value by 16344 (that t
 </p>
 
 
-<h4>Post LPF processing</h4>
+<h4>Post digital LPF processing</h4>
 
 <p><strong>To be continued</strong></p>
 
