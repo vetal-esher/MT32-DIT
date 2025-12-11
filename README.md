@@ -350,10 +350,20 @@ Also, within this logic, you need to avoid update output data register when it m
 
 <h4>Digital DC offset</h4>
 
-<p><strong>Updated 15.10.2025</strong></p> It's seems that there's nothing we can do (at least with 1st revision of MT-32) since DAC's LSB bit is tied to ground and there is 14 bit dropped in DAC schematic. When LSB bit will be used, there will be no DC offset at all. After all, i checked the PCB and found that the Bit14(=D14) used in schematic bus between LA32/Reverb/DAC - on real PCB has no route out from LA32 and Reverb chips, and the pin 27 (D14) on LA32 has no activity on oscilloscope at all.
-You can slightly lower DC offset decrementing each sample value by 16344 (that the value of amplitude zero when there's no sound from MT-32), but this will give you only 6dB fix.
+<p><strong>Updated 15.10.2025</strong></p>
+<p><strike>It's seems that there's nothing we can do (at least with 1st revision of MT-32) since DAC's LSB bit is tied to ground and there is 14 bit dropped in DAC schematic. 
+When LSB bit will be used, there will be no DC offset at all. After all, i checked the PCB and found that the Bit14(=D14) used in schematic bus between LA32/Reverb/DAC - on real PCB has no route out from 
+LA32 and Reverb chips, and the pin 27 (D14) on LA32 has no activity on oscilloscope at all. You can slightly lower DC offset decrementing each sample value by 16384 (that the value of amplitude zero when there's no sound from MT-32), but this will give you only 6dB fix.
+</strike></p>
+<p><strong>Updated 11.12.2025</strong></p>
+<p>
+Another update, giving a new hope. It seems, that i work with rare PCB revision (79377310 01) that is surely "old" 15-bit version, but it uses LA32 package from "new" 16-bit version.
+It's mentioned, that <strong>"Main Board (7937731001) is completely different from (7937731000) in circuit design. But Main Board (79377310001) from which PHONES jack (JK5) is removed is compatible
+with (7937731000). Only (79377310001) will be supplied fore replacement. For MT-32 (prior to SN938999) which has no PHONES jack, PHONES jack (JK5) on Main board (79377310001) must be removed."</strong>
 </p>
+<p>This means, that there IS missing 14 bit in the bus, but it has to be found at bit 0 (LSB) already. Updates will be coming soon.
 
+</p>
 
 <h4>Post digital LPF processing</h4>
 
