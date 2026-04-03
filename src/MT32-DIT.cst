@@ -29,6 +29,7 @@ IO_PORT "dac[2]" PULL_MODE=DOWN IO_TYPE=LVCMOS33;
 IO_LOC "dac[1]" 42;
 IO_PORT "dac[1]" PULL_MODE=DOWN IO_TYPE=LVCMOS33;
 IO_LOC "dac[0]" 55;
+//IO_LOC "dac[0]" 35;
 IO_PORT "dac[0]" PULL_MODE=DOWN IO_TYPE=LVCMOS33;
 
 IO_LOC "mclk" 51;
@@ -42,10 +43,14 @@ IO_PORT "ch_id[1]" PULL_MODE=NONE IO_TYPE=LVCMOS33;
 IO_LOC "ch_id[2]" 48;
 IO_PORT "ch_id[2]" PULL_MODE=NONE IO_TYPE=LVCMOS33;
 
+
 IO_LOC "sys_rst_n" 3;
 IO_PORT "sys_rst_n" PULL_MODE=UP;
 IO_LOC "rev_sw" 4;
 IO_PORT "rev_sw" PULL_MODE=UP;
+//IO_LOC "chorus_sw" 55;
+//IO_PORT "chorus_sw" PULL_MODE=UP;
+
 
 
 IO_LOC "bck" 49;
@@ -77,10 +82,10 @@ IO_PORT "sdata" DRIVE=12 IO_TYPE=LVCMOS33;
 //IO_PORT "dtr" DRIVE=8;
 //IO_LOC "read_fifo" ;
 //IO_PORT "read_fifo" DRIVE=8;
-//IO_LOC "full" 56;
-//IO_PORT "full" DRIVE=8;
-//IO_LOC "dtw" 57;
-//IO_PORT "dtw" DRIVE=8 IO_TYPE=LVCMOS33;
+//IO_LOC "thru" 56;
+//IO_PORT "thru" DRIVE=8  IO_TYPE=LVCMOS33;
+IO_LOC "skip" 57;
+IO_PORT "skip" DRIVE=8 IO_TYPE=LVCMOS33;
 IO_LOC "dtr" 68;
 IO_PORT "dtr" DRIVE=8 IO_TYPE=LVCMOS33;
 IO_LOC "drq" 69;
